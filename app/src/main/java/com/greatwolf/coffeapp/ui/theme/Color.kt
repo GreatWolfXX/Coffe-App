@@ -1,4 +1,4 @@
-package com.greatwolf.coffeapp.ui.theme
+package com.greatwolf.coffeapp.app.theme
 
 import androidx.compose.ui.graphics.Color
 
