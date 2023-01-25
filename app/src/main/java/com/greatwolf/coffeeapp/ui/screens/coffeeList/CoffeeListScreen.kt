@@ -26,9 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.model.Coffee
-import com.greatwolf.coffeeapp.ui.theme.BrownCoffee
-import com.greatwolf.coffeeapp.ui.theme.roboto
-import com.greatwolf.coffeeapp.ui.theme.sizing_20
+import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
