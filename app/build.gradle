@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'com.greatwolf.coffeapp'
+    namespace 'com.greatwolf.coffeeapp'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.greatwolf.coffeapp"
+        applicationId "com.greatwolf.coffeeapp"
         minSdk 23
         targetSdk 33
         versionCode 1
@@ -74,6 +74,12 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+
+    // Google Fonts
+    implementation "androidx.compose.ui:ui-text-google-fonts:1.4.0-alpha04"
 }
 
 kapt {
