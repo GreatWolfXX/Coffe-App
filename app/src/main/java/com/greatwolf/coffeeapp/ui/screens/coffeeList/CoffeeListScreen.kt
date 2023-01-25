@@ -145,10 +145,14 @@ fun CoffeeListError(exception: String?) {
 @Composable
 fun LoadingView() {
     Column(
-        modifier = Modifier.padding(spacing_16),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(spacing_16),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = BrownCoffee
+        )
     }
 }
