@@ -3,4 +3,8 @@
     <string name="ic_arrow_back">Arrow Back</string>
     <string name="image_coffee_time">Coffee Time</string>
     <string name="auth_title">Get the best coffee in town!</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_login">Log In</string>
+    <string name="btn_facebook_auth">Connect with Facebook</string>
+    <string name="btn_facebook_auth_desc">Auth Facebook</string>
 </resources>

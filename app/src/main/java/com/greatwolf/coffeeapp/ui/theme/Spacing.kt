@@ -3,8 +3,12 @@ package com.greatwolf.coffeeapp.ui.theme
 import androidx.compose.ui.unit.dp
 
 val spacing_0 = 0.dp
+val spacing_1 = 1.dp
 val spacing_8 = 8.dp
+val spacing_10 = 10.dp
+val spacing_15 = 15.dp
 val spacing_16 = 16.dp
+val spacing_20 = 20.dp
 val spacing_24 = 20.dp
 val spacing_32 = 32.dp
 val spacing_48 = 48.dp
