@@ -48,3 +48,9 @@ val robotoFontName = GoogleFont("Roboto")
 val roboto = FontFamily(
     Font(googleFont = robotoFontName, fontProvider = provider)
 )
+
+val rubikFontName = GoogleFont("Rubik")
+
+val rubik = FontFamily(
+    Font(googleFont = rubikFontName, fontProvider = provider)
+)
