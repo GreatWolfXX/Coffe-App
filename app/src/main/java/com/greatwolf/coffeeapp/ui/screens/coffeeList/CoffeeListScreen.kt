@@ -59,7 +59,9 @@ fun CoffeeListContent(
     paddingValues: PaddingValues) {
     Column {
         CoffeeNavBar(
-            onClickArrowBack = { /*TODO*/ },
+            onClickArrowBack = {
+                navController.navigate(Screen.CoffeeAuthScreen.route)
+            },
             title = stringResource(id = R.string.title_menu),
             paddingValues = PaddingValues(horizontal = spacing_32)
         )

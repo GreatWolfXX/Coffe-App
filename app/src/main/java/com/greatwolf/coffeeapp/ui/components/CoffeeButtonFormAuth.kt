@@ -19,6 +19,7 @@ import com.greatwolf.coffeeapp.ui.theme.*
 @Composable
 fun CoffeeButtonFormAuth(
     btnClickable: () -> Unit,
+    btnHint: () -> Unit,
     btnText: String,
     firstHint: String,
     secondHint: String
@@ -29,7 +30,7 @@ fun CoffeeButtonFormAuth(
         Spacer(modifier = Modifier.size(spacing_40))
         Button(
             onClick = {
-                btnClickable
+                btnClickable.invoke()
             },
             colors = ButtonDefaults.buttonColors(ButtonBrownCoffee),
             modifier = Modifier
@@ -52,7 +53,7 @@ fun CoffeeButtonFormAuth(
         Row(
             modifier = Modifier
                 .clickable {
-
+                    btnHint.invoke()
                 }
         ) {
             Text(

@@ -12,18 +12,23 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.greatwolf.coffeeapp.R
+import com.greatwolf.coffeeapp.ui.Screen
 import com.greatwolf.coffeeapp.ui.components.CoffeeButtonFormAuth
 import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeeLoginScreen() {
+fun CoffeeLoginScreen(
+    navController: NavController
+) {
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
                 CoffeeLoginContent(
+                    navController = navController,
                     paddingValues = paddingValues
                 )
             }
@@ -32,13 +37,18 @@ fun CoffeeLoginScreen() {
 }
 
 @Composable
-fun CoffeeLoginContent(paddingValues: PaddingValues) {
+fun CoffeeLoginContent(
+    navController: NavController,
+    paddingValues: PaddingValues
+) {
     Column(
         modifier = Modifier
             .padding(horizontal = spacing_32)
     ) {
         CoffeeNavBar(
-            onClickArrowBack = {},
+            onClickArrowBack = {
+                navController.navigate(Screen.CoffeeAuthScreen.route)
+            },
             title = stringResource(id = R.string.btn_login)
         )
         Spacer(modifier = Modifier.size(spacing_32))
@@ -55,7 +65,12 @@ fun CoffeeLoginContent(paddingValues: PaddingValues) {
         Spacer(modifier = Modifier.size(spacing_32))
         CoffeeForm()
         CoffeeButtonFormAuth(
-            btnClickable = {},
+            btnClickable = {
+                navController.navigate(Screen.CoffeeListScreen.route)
+            },
+            btnHint = {
+                navController.navigate(Screen.CoffeeRegisterScreen.route)
+            },
             btnText = stringResource(id = R.string.btn_login),
             firstHint = stringResource(id = R.string.t_register),
             secondHint = stringResource(id = R.string.btn_register)
@@ -141,10 +156,4 @@ fun CoffeeForm() {
                 }
         )
     }
-}
-
-@Preview
-@Composable
-private fun PreviewCoffeeLoginScreen() {
-    CoffeeLoginScreen()
 }

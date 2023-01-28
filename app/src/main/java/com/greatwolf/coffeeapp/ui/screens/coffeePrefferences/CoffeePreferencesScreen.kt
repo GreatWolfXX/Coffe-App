@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.model.Coffee
@@ -37,6 +38,7 @@ import com.greatwolf.coffeeapp.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoffeePreferencesScreen(
+    navController: NavController,
     viewModel: CoffeePreferencesViewModel = hiltViewModel()
 ) {
     val state = viewModel.coffeePreferencesState.collectAsState()
@@ -44,6 +46,7 @@ fun CoffeePreferencesScreen(
         content = { paddingValues ->
             BoxWithConstraints() {
                 CoffeePreferencesContent(
+                    navController = navController,
                     state = state.value,
                     paddingValues = paddingValues
                 )
@@ -52,10 +55,16 @@ fun CoffeePreferencesScreen(
 }
 
 @Composable
-fun CoffeePreferencesContent(state: CoffeePreferencesState, paddingValues: PaddingValues) {
+fun CoffeePreferencesContent(
+    navController: NavController,
+    state: CoffeePreferencesState,
+    paddingValues: PaddingValues
+) {
     Column {
         CoffeeNavBar(
-            onClickArrowBack = { /*TODO*/ },
+            onClickArrowBack = {
+                navController.popBackStack()
+            },
             title = stringResource(id = R.string.title_preferences),
             paddingValues = PaddingValues(horizontal = spacing_32)
         )
@@ -426,10 +435,4 @@ fun FourthPreferencesCoffee() {
             .height(spacing_1)
             .background(TextBrownCoffee)
     )
-}
-
-@Preview
-@Composable
-private fun PreviewCoffeePreferencesScreen() {
-    CoffeePreferencesScreen()
 }

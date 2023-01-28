@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.greatwolf.coffeeapp.ui.Screen
 import com.greatwolf.coffeeapp.ui.screens.coffeeAuth.CoffeeAuthScreen
 import com.greatwolf.coffeeapp.ui.screens.coffeeList.CoffeeListScreen
+import com.greatwolf.coffeeapp.ui.screens.coffeeLogin.CoffeeLoginScreen
 import com.greatwolf.coffeeapp.ui.screens.coffeePrefferences.CoffeePreferencesScreen
 import com.greatwolf.coffeeapp.ui.screens.coffeeRegister.CoffeeRegisterScreen
 import com.greatwolf.coffeeapp.ui.theme.CoffeeAppTheme
@@ -44,12 +45,21 @@ fun App() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Screen.CoffeeListScreen.route) {
+        startDestination = Screen.CoffeeAuthScreen.route) {
         composable(route =  Screen.CoffeeListScreen.route) {
             CoffeeListScreen(navController = navController)
         }
         composable(route =  Screen.CoffeePreferencesScreen.route + "/{coffeeId}") {
-            CoffeePreferencesScreen()
+            CoffeePreferencesScreen(navController = navController)
+        }
+        composable(route =  Screen.CoffeeAuthScreen.route) {
+            CoffeeAuthScreen(navController = navController)
+        }
+        composable(route =  Screen.CoffeeLoginScreen.route) {
+            CoffeeLoginScreen(navController = navController)
+        }
+        composable(route =  Screen.CoffeeRegisterScreen.route) {
+            CoffeeRegisterScreen(navController = navController)
         }
     }
 }
