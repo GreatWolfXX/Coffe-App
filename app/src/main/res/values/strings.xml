@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Coffee App</string>
+    <string name="ic_arrow_back">Arrow Back</string>
+    <string name="image_coffee_time">Coffee Time</string>
+    <string name="auth_title">Get the best coffee in town!</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_login">Log In</string>
+    <string name="btn_facebook_auth">Connect with Facebook</string>
+    <string name="btn_facebook_auth_desc">Auth Facebook</string>
+    <string name="welcome_back">Welcome back!</string>
+    <string name="create_new_account">Let\'s create a new account</string>
+    <string name="tf_email">Email</string>
+    <string name="tf_password">Password</string>
+    <string name="tf_repeat_password">Repeat password</string>
+    <string name="tf_full_name">Full Name</string>
+    <string name="t_forgot_password">Forgot password?</string>
+    <string name="t_register">Don’t have an account?\t</string>
+    <string name="t_login">Already have an account?\t</string>
+    <string name="title_menu">Menu</string>
+    <string name="title_preferences">Preferences</string>
+    <string name="header_description">Header Coffee</string>
+</resources>
