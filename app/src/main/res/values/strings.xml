@@ -16,4 +16,5 @@
     <string name="t_forgot_password">Forgot password?</string>
     <string name="t_register">Don’t have an account?\t</string>
     <string name="t_login">Already have an account?\t</string>
+    <string name="title_menu">Menu</string>
 </resources>

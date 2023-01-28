@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.model.Coffee
+import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,14 +46,22 @@ fun CoffeeListScreen(viewModel: CoffeeListViewModel = hiltViewModel()) {
 
 @Composable
 fun CoffeeListContent(state: CoffeeListState, paddingValues: PaddingValues) {
-    when (state) {
-        is CoffeeListState.Success -> CoffeeListSuccess(
-            listOfCoffees = state.listOfCoffees
+    Column {
+        CoffeeNavBar(
+            onClickArrowBack = { /*TODO*/ },
+            title = stringResource(id = R.string.title_menu),
+            paddingValues = PaddingValues(horizontal = spacing_32)
         )
-        is CoffeeListState.Loading -> LoadingView()
-        is CoffeeListState.Error -> CoffeeListError(exception = state.exception.message)
+        when (state) {
+            is CoffeeListState.Success -> CoffeeListSuccess(
+                listOfCoffees = state.listOfCoffees
+            )
+            is CoffeeListState.Loading -> LoadingView()
+            is CoffeeListState.Error -> CoffeeListError(exception = state.exception.message)
+        }
     }
 }
+
 
 @Composable
 fun CoffeeListSuccess(listOfCoffees: List<Coffee>) {

@@ -42,7 +42,7 @@ fun App() {
     val navController = rememberNavController()
     NavHost(navController, startDestination = "coffee") {
         composable(route = "coffee") {
-            CoffeeRegisterScreen()
+            CoffeeListScreen()
         }
     }
 }
