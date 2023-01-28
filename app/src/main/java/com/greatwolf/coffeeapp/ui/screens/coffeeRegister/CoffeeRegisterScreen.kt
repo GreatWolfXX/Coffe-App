@@ -1,4 +1,4 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeeLogin
+package com.greatwolf.coffeeapp.ui.screens.coffeeRegister
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,11 +19,11 @@ import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeeLoginScreen() {
+fun CoffeeRegisterScreen() {
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
-                CoffeeLoginContent(
+                CoffeeRegisterContent(
                     paddingValues = paddingValues
                 )
             }
@@ -32,33 +32,33 @@ fun CoffeeLoginScreen() {
 }
 
 @Composable
-fun CoffeeLoginContent(paddingValues: PaddingValues) {
+fun CoffeeRegisterContent(paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .padding(horizontal = spacing_32)
     ) {
         CoffeeNavBar(
             onClickArrowBack = {},
-            title = stringResource(id = R.string.btn_login)
+            title = stringResource(id = R.string.btn_register)
         )
         Spacer(modifier = Modifier.size(spacing_32))
         Text(
-            stringResource(id = R.string.welcome_back),
+            stringResource(id = R.string.create_new_account),
             style = MaterialTheme.typography.bodyLarge,
             fontFamily = roboto,
             fontWeight = FontWeight.Medium,
             fontStyle = FontStyle.Normal,
             textAlign = TextAlign.Start,
-            fontSize = sizing_32,
+            fontSize = sizing_28,
             color = TextBrownCoffee,
         )
         Spacer(modifier = Modifier.size(spacing_32))
         CoffeeForm()
         CoffeeButtonFormAuth(
             btnClickable = {},
-            btnText = stringResource(id = R.string.btn_login),
-            firstHint = stringResource(id = R.string.t_register),
-            secondHint = stringResource(id = R.string.btn_register)
+            btnText = stringResource(id = R.string.btn_register),
+            firstHint = stringResource(id = R.string.t_login),
+            secondHint = stringResource(id = R.string.btn_login)
         )
     }
 }
@@ -73,6 +73,32 @@ fun CoffeeForm() {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
+        TextField(
+            value = "",
+            onValueChange = {},
+            label = {
+                Text(
+                    stringResource(id = R.string.tf_full_name),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontFamily = rubik,
+                    fontWeight = FontWeight.Normal,
+                    fontStyle = FontStyle.Normal,
+                    textAlign = TextAlign.Center,
+                    fontSize = sizing_14,
+                    color = UnfocusedLabelTextCoffee
+                )
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                unfocusedLabelColor = UnfocusedLabelTextCoffee,
+                focusedLabelColor = FocusedLabelTextCoffee,
+                unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
+                focusedIndicatorColor = FocusedIndicatorBrownCoffee,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.size(spacing_16))
         TextField(
             value = "",
             onValueChange = {},
@@ -124,27 +150,37 @@ fun CoffeeForm() {
             modifier = Modifier
                 .fillMaxWidth()
         )
-        Spacer(modifier = Modifier.size(spacing_20))
-        Text(
-            stringResource(id = R.string.t_forgot_password),
-            style = MaterialTheme.typography.bodyLarge,
-            fontFamily = roboto,
-            fontWeight = FontWeight.Medium,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.End,
-            fontSize = sizing_14,
-            color = ButtonBrownCoffee,
+        Spacer(modifier = Modifier.size(spacing_16))
+        TextField(
+            value = "",
+            onValueChange = {},
+            label = {
+                Text(
+                    stringResource(id = R.string.tf_repeat_password),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontFamily = rubik,
+                    fontWeight = FontWeight.Normal,
+                    fontStyle = FontStyle.Normal,
+                    textAlign = TextAlign.Center,
+                    fontSize = sizing_14,
+                    color = UnfocusedLabelTextCoffee
+                )
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                unfocusedLabelColor = UnfocusedLabelTextCoffee,
+                focusedLabelColor = FocusedLabelTextCoffee,
+                unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
+                focusedIndicatorColor = FocusedIndicatorBrownCoffee,
+            ),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-
-                }
         )
     }
 }
 
 @Preview
 @Composable
-private fun PreviewCoffeeLoginScreen() {
-    CoffeeLoginScreen()
+private fun PreviewCoffeeRegisterScreen() {
+    CoffeeRegisterScreen()
 }
