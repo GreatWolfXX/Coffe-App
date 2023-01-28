@@ -46,11 +46,15 @@ val provider = GoogleFont.Provider(
 val robotoFontName = GoogleFont("Roboto")
 
 val roboto = FontFamily(
-    Font(googleFont = robotoFontName, fontProvider = provider)
+    Font(googleFont = robotoFontName, fontProvider = provider),
+    Font(googleFont = robotoFontName, fontProvider = provider, weight = FontWeight.Medium),
+    Font(googleFont = robotoFontName, fontProvider = provider, weight = FontWeight.SemiBold),
 )
 
 val rubikFontName = GoogleFont("Rubik")
 
 val rubik = FontFamily(
-    Font(googleFont = rubikFontName, fontProvider = provider)
+    Font(googleFont = rubikFontName, fontProvider = provider),
+    Font(googleFont = rubikFontName, fontProvider = provider, weight = FontWeight.Medium),
+    Font(googleFont = rubikFontName, fontProvider = provider, weight = FontWeight.ExtraBold),
 )

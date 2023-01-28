@@ -34,7 +34,7 @@ fun CoffeeNavBar(
             modifier = Modifier
                 .weight(0.1f)
                 .clickable {
-                    onClickArrowBack
+                    onClickArrowBack.invoke()
                 },
             contentAlignment = Alignment.CenterStart
         ) {

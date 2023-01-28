@@ -18,17 +18,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.greatwolf.coffeeapp.R
+import com.greatwolf.coffeeapp.ui.Screen
 import com.greatwolf.coffeeapp.ui.theme.*
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeeAuthScreen() {
+fun CoffeeAuthScreen(
+    navController: NavController
+) {
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
                 CoffeeAuthContent(
+                    navController = navController,
                     paddingValues = paddingValues
                 )
             }
@@ -37,7 +42,10 @@ fun CoffeeAuthScreen() {
 }
 
 @Composable
-fun CoffeeAuthContent(paddingValues: PaddingValues) {
+fun CoffeeAuthContent(
+    navController: NavController,
+    paddingValues: PaddingValues
+) {
     Image(
         imageVector = ImageVector.vectorResource(id = R.drawable.bg_coffe_time),
         contentDescription = stringResource(id = R.string.image_coffee_time),
@@ -73,12 +81,12 @@ fun CoffeeAuthContent(paddingValues: PaddingValues) {
                     end = spacing_48
                 )
         )
-        CoffeeButtonContainer()
+        CoffeeButtonContainer(navController = navController)
     }
 }
 
 @Composable
-fun CoffeeButtonContainer() {
+fun CoffeeButtonContainer(navController: NavController) {
     Column(
         modifier = Modifier
             .padding(horizontal = spacing_32, vertical = spacing_64)
@@ -88,7 +96,9 @@ fun CoffeeButtonContainer() {
                 .fillMaxWidth()
         ) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    navController.navigate(Screen.CoffeeRegisterScreen.route)
+                },
                 colors = ButtonDefaults.buttonColors(ButtonBrownCoffee),
                 modifier = Modifier
                     .weight(1f)
@@ -109,7 +119,9 @@ fun CoffeeButtonContainer() {
             }
             Spacer(modifier = Modifier.size(spacing_15))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    navController.navigate(Screen.CoffeeLoginScreen.route)
+                },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 border = BorderStroke(spacing_1, ButtonBrownCoffee),
                 modifier = Modifier
@@ -160,10 +172,4 @@ fun CoffeeButtonContainer() {
             )
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewCoffeeAuthScreen() {
-    CoffeeAuthScreen()
 }
