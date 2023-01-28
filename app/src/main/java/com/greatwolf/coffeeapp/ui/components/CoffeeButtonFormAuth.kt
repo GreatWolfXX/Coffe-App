@@ -39,7 +39,7 @@ fun CoffeeButtonFormAuth(
                 btnText,
                 style = MaterialTheme.typography.bodyLarge,
                 fontFamily = roboto,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Medium,
                 fontStyle = FontStyle.Normal,
                 textAlign = TextAlign.Center,
                 fontSize = sizing_14,

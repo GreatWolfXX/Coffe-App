@@ -19,4 +19,20 @@
     <string name="title_menu">Menu</string>
     <string name="title_preferences">Preferences</string>
     <string name="header_description">Header Coffee</string>
+    <string name="btn_add_description">Add</string>
+    <string name="btn_minus_description">Minus</string>
+    <string name="t_size">Size</string>
+    <string name="t_sugar">Sugar</string>
+    <string name="t_additions">Additions</string>
+    <string name="t_total">Total:</string>
+    <string name="ic_small_coffee_description">Small Coffee</string>
+    <string name="ic_middle_coffee_description">Middle Coffee</string>
+    <string name="ic_big_coffee_description">Big Coffee</string>
+    <string name="ic_no_sugar_description">No Sugar</string>
+    <string name="ic_one_sugar_description">One Sugar</string>
+    <string name="ic_two_sugar_description">Two Sugar</string>
+    <string name="ic_three_sugar_description">Three Sugar</string>
+    <string name="ic_whipped_cream_description">Whipped Cream</string>
+    <string name="ic_vanilla_description">Vanilla</string>
+    <string name="btn_add_to_cart">Add to cart</string>
 </resources>
