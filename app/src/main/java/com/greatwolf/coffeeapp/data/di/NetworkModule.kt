@@ -1,6 +1,6 @@
 package com.greatwolf.coffeeapp.data.di
 
-import com.greatwolf.coffeeapp.data.api.BASE_URL
+import com.greatwolf.coffeeapp.common.Constants.BASE_URL
 import com.greatwolf.coffeeapp.data.api.CoffeeApi
 import com.greatwolf.coffeeapp.data.repository.CoffeeRepositoryImpl
 import com.greatwolf.coffeeapp.domain.repository.CoffeeRepository

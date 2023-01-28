@@ -15,3 +15,4 @@ val spacing_40 = 40.dp
 val spacing_48 = 48.dp
 val spacing_50 = 50.dp
 val spacing_64 = 64.dp
+val spacing_128 = 128.dp

@@ -16,4 +16,12 @@ class CoffeeRepositoryImpl(
             Result.Error(exception)
         }
     }
+
+    override suspend fun getCoffeeById(coffeeId: String): Result<Coffee> {
+        return try {
+            Result.Success(coffeeApi.getCoffeeById(coffeeId).toDomain())
+        } catch (exception: Exception) {
+            Result.Error(exception)
+        }
+    }
 }

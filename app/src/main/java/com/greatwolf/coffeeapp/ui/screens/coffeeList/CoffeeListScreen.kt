@@ -1,6 +1,7 @@
 package com.greatwolf.coffeeapp.ui.screens.coffeeList
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,22 +22,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.model.Coffee
+import com.greatwolf.coffeeapp.ui.Screen
+import com.greatwolf.coffeeapp.ui.components.CoffeeError
 import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
+import com.greatwolf.coffeeapp.ui.components.LoadingView
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeeListScreen(viewModel: CoffeeListViewModel = hiltViewModel()) {
+fun CoffeeListScreen(
+    navController: NavController,
+    viewModel: CoffeeListViewModel = hiltViewModel()
+    ) {
     val state = viewModel.coffeeListState.collectAsState()
     viewModel.fetchCoffees()
     Scaffold(
         content = { paddingValues ->
             CoffeeListContent(
+                navController,
                 state = state.value,
                 paddingValues = paddingValues
             )
@@ -45,7 +53,10 @@ fun CoffeeListScreen(viewModel: CoffeeListViewModel = hiltViewModel()) {
 
 
 @Composable
-fun CoffeeListContent(state: CoffeeListState, paddingValues: PaddingValues) {
+fun CoffeeListContent(
+    navController: NavController,
+    state: CoffeeListState,
+    paddingValues: PaddingValues) {
     Column {
         CoffeeNavBar(
             onClickArrowBack = { /*TODO*/ },
@@ -54,32 +65,45 @@ fun CoffeeListContent(state: CoffeeListState, paddingValues: PaddingValues) {
         )
         when (state) {
             is CoffeeListState.Success -> CoffeeListSuccess(
+                navController = navController,
                 listOfCoffees = state.listOfCoffees
             )
             is CoffeeListState.Loading -> LoadingView()
-            is CoffeeListState.Error -> CoffeeListError(exception = state.exception.message)
+            is CoffeeListState.Error -> CoffeeError(exception = state.exception.message)
         }
     }
 }
 
 
 @Composable
-fun CoffeeListSuccess(listOfCoffees: List<Coffee>) {
+fun CoffeeListSuccess(
+    navController: NavController,
+    listOfCoffees: List<Coffee>
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(1),
         modifier = Modifier.fillMaxWidth()
     ) {
         items(listOfCoffees) { coffee ->
-            CoffeeCard(coffee = coffee)
+            CoffeeCard(
+                navController,
+                coffee = coffee
+            )
         }
     }
 }
 
 @Composable
-fun CoffeeCard(coffee: Coffee) {
+fun CoffeeCard(
+    navController: NavController,
+    coffee: Coffee
+) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                navController.navigate(Screen.CoffeePreferencesScreen.route + "/${coffee.id}")
+            },
         shape = RoundedCornerShape(spacing_0),
         elevation = CardDefaults.cardElevation(spacing_8)
     ) {
@@ -94,8 +118,7 @@ fun CoffeeCard(coffee: Coffee) {
                 contentDescription = coffee.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(spacing_64)
-                    .width(spacing_64)
+                    .size(coffee_image_64)
                     .clip(RoundedCornerShape(spacing_50))
             )
             Text(
@@ -121,45 +144,5 @@ fun CoffeeCard(coffee: Coffee) {
             )
         }
 
-    }
-}
-
-@Preview
-@Composable
-fun CoffeeCardPreview() {
-    CoffeeCard(coffee = Coffee(
-        description = "none",
-        id = 1,
-        image = "none",
-        ingredients = listOf("none"),
-        title = "Black"
-    ))
-}
-
-@Composable
-fun CoffeeListError(exception: String?) {
-    exception?.let {
-        Column(
-            modifier = Modifier.padding(spacing_16),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = it)
-        }
-    }
-}
-
-@Composable
-fun LoadingView() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(spacing_16),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator(
-            color = BrownCoffee
-        )
     }
 }
