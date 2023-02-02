@@ -10,6 +10,5 @@ fun CoffeeDto.toDomain() = Coffee(
     description = description,
     id = id,
     image = image,
-    ingredients = ingredients,
     title = title
 )

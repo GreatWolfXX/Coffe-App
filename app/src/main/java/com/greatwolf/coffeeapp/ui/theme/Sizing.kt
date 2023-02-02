@@ -2,6 +2,7 @@ package com.greatwolf.coffeeapp.ui.theme
 
 import androidx.compose.ui.unit.sp
 
+val sizing_12 = 12.sp
 val sizing_14 = 14.sp
 val sizing_18 = 18.sp
 val sizing_20 = 20.sp

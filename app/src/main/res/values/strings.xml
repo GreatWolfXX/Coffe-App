@@ -35,4 +35,11 @@
     <string name="ic_whipped_cream_description">Whipped Cream</string>
     <string name="ic_vanilla_description">Vanilla</string>
     <string name="btn_add_to_cart">Add to cart</string>
+    <string name="err_passwords_match">The passwords don`t match</string>
+    <string name="err_password_short">The password needs to consists of at least 8 characters</string>
+    <string name="err_password_not_contain">The password needs to contain at least one letter and digit</string>
+    <string name="err_email_blank">The email can`t be blank</string>
+    <string name="err_not_valid_email">That`s not a valid email</string>
+    <string name="err_full_name_blank">The Full Name can`t be blank</string>
+    <string name="err_full_name_digit">The full name must not contain digits</string>
 </resources>
