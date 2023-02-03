@@ -4,16 +4,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.greatwolf.coffeeapp.R
+import com.greatwolf.coffeeapp.domain.util.ValidationEvent
 import com.greatwolf.coffeeapp.ui.Screen
 import com.greatwolf.coffeeapp.ui.components.CoffeeButtonFormAuth
 import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
@@ -22,14 +27,28 @@ import com.greatwolf.coffeeapp.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoffeeLoginScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: CoffeeLoginViewModel = hiltViewModel()
 ) {
+    val state = viewModel.coffeeLoginState.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(key1 = context) {
+        viewModel.validationEvents.collect { event ->
+            when (event) {
+                is ValidationEvent.Success -> {
+                    navController.navigate(Screen.CoffeeListScreen.route)
+                }
+            }
+        }
+    }
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
                 CoffeeLoginContent(
                     navController = navController,
-                    paddingValues = paddingValues
+                    paddingValues = paddingValues,
+                    viewModel = viewModel,
+                    state = state
                 )
             }
 
@@ -39,7 +58,9 @@ fun CoffeeLoginScreen(
 @Composable
 fun CoffeeLoginContent(
     navController: NavController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    viewModel: CoffeeLoginViewModel,
+    state: State<CoffeeLoginState>
 ) {
     Column(
         modifier = Modifier
@@ -63,10 +84,13 @@ fun CoffeeLoginContent(
             color = TextBrownCoffee,
         )
         Spacer(modifier = Modifier.size(spacing_32))
-        CoffeeForm()
+        CoffeeForm(
+            viewModel = viewModel,
+            state = state
+        )
         CoffeeButtonFormAuth(
             btnClickable = {
-                navController.navigate(Screen.CoffeeListScreen.route)
+                viewModel.onEvent(CoffeeLoginEvent.Submit)
             },
             btnHint = {
                 navController.navigate(Screen.CoffeeRegisterScreen.route)
@@ -82,15 +106,21 @@ fun CoffeeLoginContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeeForm() {
+fun CoffeeForm(
+    viewModel: CoffeeLoginViewModel,
+    state: State<CoffeeLoginState>
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         TextField(
-            value = "",
-            onValueChange = {},
+            value = state.value.email,
+            onValueChange = {
+                viewModel.onEvent(CoffeeLoginEvent.EmailChanged((it)))
+            },
+            isError = state.value.emailError != null,
             label = {
                 Text(
                     stringResource(id = R.string.tf_email),
@@ -113,10 +143,28 @@ fun CoffeeForm() {
             modifier = Modifier
                 .fillMaxWidth()
         )
+        if(state.value.emailError != null) {
+            Spacer(modifier = Modifier.size(spacing_8))
+            Text(
+                text = state.value.emailError!!.asString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = rubik,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Normal,
+                textAlign = TextAlign.Start,
+                fontSize = sizing_12,
+                color = RedCoffee,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
         Spacer(modifier = Modifier.size(spacing_16))
         TextField(
-            value = "",
-            onValueChange = {},
+            value = state.value.password,
+            onValueChange = {
+                viewModel.onEvent(CoffeeLoginEvent.PasswordChanged((it)))
+            },
+            isError = state.value.passwordError != null,
             label = {
                 Text(
                     stringResource(id = R.string.tf_password),
@@ -139,6 +187,21 @@ fun CoffeeForm() {
             modifier = Modifier
                 .fillMaxWidth()
         )
+        if(state.value.passwordError != null) {
+            Spacer(modifier = Modifier.size(spacing_8))
+            Text(
+                text = state.value.passwordError!!.asString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = rubik,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Normal,
+                textAlign = TextAlign.Start,
+                fontSize = sizing_12,
+                color = RedCoffee,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
         Spacer(modifier = Modifier.size(spacing_20))
         Text(
             stringResource(id = R.string.t_forgot_password),
