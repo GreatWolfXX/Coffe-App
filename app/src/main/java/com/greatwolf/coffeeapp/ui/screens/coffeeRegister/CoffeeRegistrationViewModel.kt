@@ -2,10 +2,8 @@ package com.greatwolf.coffeeapp.ui.screens.coffeeRegister
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.greatwolf.coffeeapp.domain.useCase.ValidateEmailUseCase
-import com.greatwolf.coffeeapp.domain.useCase.ValidateFullNameUseCase
-import com.greatwolf.coffeeapp.domain.useCase.ValidatePasswordUseCase
-import com.greatwolf.coffeeapp.domain.useCase.ValidateRepeatedPasswordUseCase
+import com.greatwolf.coffeeapp.domain.useCase.*
+import com.greatwolf.coffeeapp.domain.util.Result
 import com.greatwolf.coffeeapp.domain.util.ValidationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +16,8 @@ class CoffeeRegistrationViewModel @Inject constructor(
     private val validateFullNameUseCase: ValidateFullNameUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val validateRepeatedPasswordUseCase: ValidateRepeatedPasswordUseCase
+    private val validateRepeatedPasswordUseCase: ValidateRepeatedPasswordUseCase,
+    private val registrationUseCase: RegistrationUseCase
 ) : ViewModel() {
 
     private val _coffeeRegistrationState: MutableStateFlow<CoffeeRegistrationState> =
@@ -64,6 +63,11 @@ class CoffeeRegistrationViewModel @Inject constructor(
                 )
             }
             is CoffeeRegistrationEvent.Submit -> {
+                setCoffeeRegistrationState(
+                    state = coffeeRegistrationState.value.copy(
+                        isLoading = true
+                    )
+                )
                 submitData()
             }
         }
@@ -102,8 +106,31 @@ class CoffeeRegistrationViewModel @Inject constructor(
             )
             return
         }
+        registrationUser()
+    }
+
+    private fun registrationUser() {
         viewModelScope.launch {
-            validationEventChannel.send(ValidationEvent.Success)
+            val response = registrationUseCase.invoke(
+                coffeeRegistrationState.value.email,
+                coffeeRegistrationState.value.password
+            )
+            when(response) {
+                is Result.Success -> {
+                    setCoffeeRegistrationState(
+                        state = coffeeRegistrationState.value.copy(
+                            isLoading = false
+                        )
+                    )
+                    validationEventChannel.send(ValidationEvent.Success)
+                }
+                is Result.Error -> setCoffeeRegistrationState(
+                    state = coffeeRegistrationState.value.copy(
+                        isLoading = false,
+                        isError = response.exception.message
+                    )
+                )
+            }
         }
     }
 }

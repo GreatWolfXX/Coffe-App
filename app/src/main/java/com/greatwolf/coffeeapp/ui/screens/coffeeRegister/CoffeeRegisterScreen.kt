@@ -1,20 +1,23 @@
 package com.greatwolf.coffeeapp.ui.screens.coffeeRegister
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -23,6 +26,7 @@ import com.greatwolf.coffeeapp.domain.util.ValidationEvent
 import com.greatwolf.coffeeapp.ui.Screen
 import com.greatwolf.coffeeapp.ui.components.CoffeeButtonFormAuth
 import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
+import com.greatwolf.coffeeapp.ui.components.LoadingView
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +56,12 @@ fun CoffeeRegisterScreen(
                     state = state
                 )
             }
-
+            if (state.value.isLoading) {
+                LoadingView()
+            }
+            if (!state.value.isError.isNullOrEmpty()) {
+                Toast.makeText(context, state.value.isError, Toast.LENGTH_LONG).show()
+            }
         })
 }
 
@@ -110,6 +119,9 @@ fun CoffeeForm(
     viewModel: CoffeeRegistrationViewModel,
     state: State<CoffeeRegistrationState>
 ) {
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var repeatedPasswordVisible by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -143,7 +155,7 @@ fun CoffeeForm(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if(state.value.fullNameError != null) {
+        if (state.value.fullNameError != null) {
             Spacer(modifier = Modifier.size(spacing_8))
             Text(
                 text = state.value.fullNameError!!.asString(),
@@ -190,7 +202,7 @@ fun CoffeeForm(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if(state.value.emailError != null) {
+        if (state.value.emailError != null) {
             Spacer(modifier = Modifier.size(spacing_8))
             Text(
                 text = state.value.emailError!!.asString(),
@@ -206,6 +218,7 @@ fun CoffeeForm(
             )
         }
         Spacer(modifier = Modifier.size(spacing_16))
+
         TextField(
             value = state.value.password,
             onValueChange = {
@@ -234,10 +247,19 @@ fun CoffeeForm(
                 unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
                 focusedIndicatorColor = FocusedIndicatorBrownCoffee,
             ),
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        imageVector = getVisibilityPasswordIcon(passwordVisible),
+                        contentDescription = getVisibilityPasswordIconDescription(passwordVisible)
+                    )
+                }
+            },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if(state.value.passwordError != null) {
+        if (state.value.passwordError != null) {
             Spacer(modifier = Modifier.size(spacing_8))
             Text(
                 text = state.value.passwordError!!.asString(),
@@ -281,10 +303,19 @@ fun CoffeeForm(
                 unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
                 focusedIndicatorColor = FocusedIndicatorBrownCoffee,
             ),
+            trailingIcon = {
+                IconButton(onClick = { repeatedPasswordVisible = !repeatedPasswordVisible }) {
+                    Icon(
+                        imageVector = getVisibilityPasswordIcon(repeatedPasswordVisible),
+                        contentDescription = getVisibilityPasswordIconDescription(repeatedPasswordVisible)
+                    )
+                }
+            },
+            visualTransformation = if (repeatedPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if(state.value.repeatedPasswordError != null) {
+        if (state.value.repeatedPasswordError != null) {
             Spacer(modifier = Modifier.size(spacing_8))
             Text(
                 text = state.value.repeatedPasswordError!!.asString(),
@@ -300,4 +331,16 @@ fun CoffeeForm(
             )
         }
     }
+}
+
+@Composable
+fun getVisibilityPasswordIcon(passwordVisible: Boolean): ImageVector {
+    return if (passwordVisible) ImageVector.vectorResource(id = R.drawable.ic_visibility_off)
+    else ImageVector.vectorResource(id = R.drawable.ic_visibility)
+}
+
+@Composable
+fun getVisibilityPasswordIconDescription(passwordVisible: Boolean): String {
+    return if (passwordVisible) stringResource(id = R.string.desc_hide_password)
+    else stringResource(id = R.string.desc_show_password)
 }

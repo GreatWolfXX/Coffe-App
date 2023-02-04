@@ -42,4 +42,6 @@
     <string name="err_not_valid_email">That`s not a valid email</string>
     <string name="err_full_name_blank">The Full Name can`t be blank</string>
     <string name="err_full_name_digit">The full name must not contain digits</string>
+    <string name="desc_hide_password">Hide password</string>
+    <string name="desc_show_password">Show password</string>
 </resources>
