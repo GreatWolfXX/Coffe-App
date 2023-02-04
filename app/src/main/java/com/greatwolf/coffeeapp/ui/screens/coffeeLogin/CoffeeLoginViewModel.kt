@@ -2,8 +2,10 @@ package com.greatwolf.coffeeapp.ui.screens.coffeeLogin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.greatwolf.coffeeapp.domain.useCase.LoginUseCase
 import com.greatwolf.coffeeapp.domain.useCase.ValidateEmailUseCase
 import com.greatwolf.coffeeapp.domain.useCase.ValidatePasswordUseCase
+import com.greatwolf.coffeeapp.domain.util.Result
 import com.greatwolf.coffeeapp.domain.util.ValidationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -15,6 +17,7 @@ import javax.inject.Inject
 class CoffeeLoginViewModel @Inject constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     private val _coffeeLoginState: MutableStateFlow<CoffeeLoginState> =
@@ -46,6 +49,11 @@ class CoffeeLoginViewModel @Inject constructor(
                 )
             }
             is CoffeeLoginEvent.Submit -> {
+                setCoffeeRegistrationState(
+                    state = coffeeLoginState.value.copy(
+                        isLoading = true
+                    )
+                )
                 submitData()
             }
         }
@@ -75,8 +83,31 @@ class CoffeeLoginViewModel @Inject constructor(
             )
             return
         }
+        loginUser()
+    }
+
+    private fun loginUser() {
         viewModelScope.launch {
-            validationEventChannel.send(ValidationEvent.Success)
+            val response = loginUseCase.invoke(
+                coffeeLoginState.value.email,
+                coffeeLoginState.value.password
+            )
+            when(response) {
+                is Result.Success -> {
+                    setCoffeeRegistrationState(
+                        state = coffeeLoginState.value.copy(
+                            isLoading = false
+                        )
+                    )
+                    validationEventChannel.send(ValidationEvent.Success)
+                }
+                is Result.Error -> setCoffeeRegistrationState(
+                    state = coffeeLoginState.value.copy(
+                        isLoading = false,
+                        isError = response.exception.message
+                    )
+                )
+            }
         }
     }
 

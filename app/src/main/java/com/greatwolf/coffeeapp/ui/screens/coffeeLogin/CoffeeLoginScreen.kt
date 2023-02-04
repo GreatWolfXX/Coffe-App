@@ -1,12 +1,11 @@
 package com.greatwolf.coffeeapp.ui.screens.coffeeLogin
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,14 +13,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.util.ValidationEvent
 import com.greatwolf.coffeeapp.ui.Screen
-import com.greatwolf.coffeeapp.ui.components.CoffeeButtonFormAuth
-import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
+import com.greatwolf.coffeeapp.ui.components.*
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +51,12 @@ fun CoffeeLoginScreen(
                     state = state
                 )
             }
-
+            if (state.value.isLoading) {
+                LoadingView()
+            }
+            if (!state.value.isError.isNullOrEmpty()) {
+                Toast.makeText(context, state.value.isError, Toast.LENGTH_SHORT).show()
+            }
         })
 }
 
@@ -110,6 +115,8 @@ fun CoffeeForm(
     viewModel: CoffeeLoginViewModel,
     state: State<CoffeeLoginState>
 ) {
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -184,6 +191,15 @@ fun CoffeeForm(
                 unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
                 focusedIndicatorColor = FocusedIndicatorBrownCoffee,
             ),
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        imageVector = getVisibilityPasswordIcon(passwordVisible),
+                        contentDescription = getVisibilityPasswordIconDescription(passwordVisible)
+                    )
+                }
+            },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
         )

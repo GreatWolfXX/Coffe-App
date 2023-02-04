@@ -9,10 +9,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,9 +22,7 @@ import androidx.navigation.NavController
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.util.ValidationEvent
 import com.greatwolf.coffeeapp.ui.Screen
-import com.greatwolf.coffeeapp.ui.components.CoffeeButtonFormAuth
-import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
-import com.greatwolf.coffeeapp.ui.components.LoadingView
+import com.greatwolf.coffeeapp.ui.components.*
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +56,7 @@ fun CoffeeRegisterScreen(
                 LoadingView()
             }
             if (!state.value.isError.isNullOrEmpty()) {
-                Toast.makeText(context, state.value.isError, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, state.value.isError, Toast.LENGTH_SHORT).show()
             }
         })
 }
@@ -331,16 +327,4 @@ fun CoffeeForm(
             )
         }
     }
-}
-
-@Composable
-fun getVisibilityPasswordIcon(passwordVisible: Boolean): ImageVector {
-    return if (passwordVisible) ImageVector.vectorResource(id = R.drawable.ic_visibility_off)
-    else ImageVector.vectorResource(id = R.drawable.ic_visibility)
-}
-
-@Composable
-fun getVisibilityPasswordIconDescription(passwordVisible: Boolean): String {
-    return if (passwordVisible) stringResource(id = R.string.desc_hide_password)
-    else stringResource(id = R.string.desc_show_password)
 }

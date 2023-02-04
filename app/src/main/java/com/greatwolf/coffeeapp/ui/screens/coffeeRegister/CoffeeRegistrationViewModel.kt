@@ -101,7 +101,8 @@ class CoffeeRegistrationViewModel @Inject constructor(
                     fullNameError = fullNameResult.errorMessage,
                     emailError = emailResult.errorMessage,
                     passwordError = passwordResult.errorMessage,
-                    repeatedPasswordError = repeatedPasswordResult.errorMessage
+                    repeatedPasswordError = repeatedPasswordResult.errorMessage,
+                    isLoading = false
                 )
             )
             return
