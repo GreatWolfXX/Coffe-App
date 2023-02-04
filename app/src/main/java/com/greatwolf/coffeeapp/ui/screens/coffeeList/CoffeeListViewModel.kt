@@ -4,19 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.greatwolf.coffeeapp.domain.model.Coffee
 import com.greatwolf.coffeeapp.domain.useCase.GetCoffeesUseCase
+import com.greatwolf.coffeeapp.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.greatwolf.coffeeapp.domain.util.Result
-import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class CoffeeListViewModel @Inject constructor(
     private val getCoffeesUseCase: GetCoffeesUseCase
-): ViewModel() {
+) : ViewModel() {
     private val _coffeeListState: MutableStateFlow<CoffeeListState> =
         MutableStateFlow(CoffeeListState.Loading)
 
@@ -34,7 +34,7 @@ class CoffeeListViewModel @Inject constructor(
     }
 
     private fun handleGetCoffeesResponse(response: Result<List<Coffee>>) {
-        when(response) {
+        when (response) {
             is Result.Success -> setCoffeeListState(CoffeeListState.Success(response.data))
             is Result.Error -> setCoffeeListState(CoffeeListState.Error(response.exception))
         }

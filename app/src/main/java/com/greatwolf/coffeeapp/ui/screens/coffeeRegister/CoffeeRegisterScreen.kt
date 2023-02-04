@@ -1,45 +1,72 @@
 package com.greatwolf.coffeeapp.ui.screens.coffeeRegister
 
-import androidx.compose.foundation.clickable
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.greatwolf.coffeeapp.R
+import com.greatwolf.coffeeapp.domain.util.ValidationEvent
 import com.greatwolf.coffeeapp.ui.Screen
-import com.greatwolf.coffeeapp.ui.components.CoffeeButtonFormAuth
-import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
+import com.greatwolf.coffeeapp.ui.components.*
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoffeeRegisterScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: CoffeeRegistrationViewModel = hiltViewModel()
 ) {
+    val state = viewModel.coffeeRegistrationState.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(key1 = context) {
+        viewModel.validationEvents.collect { event ->
+            when (event) {
+                is ValidationEvent.Success -> {
+                    navController.navigate(Screen.CoffeeListScreen.route)
+                }
+            }
+        }
+    }
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
                 CoffeeRegisterContent(
                     navController = navController,
-                    paddingValues = paddingValues
+                    paddingValues = paddingValues,
+                    viewModel = viewModel,
+                    state = state
                 )
             }
-
+            if (state.value.isLoading) {
+                LoadingView()
+            }
+            if (!state.value.isError.isNullOrEmpty()) {
+                Toast.makeText(context, state.value.isError, Toast.LENGTH_SHORT).show()
+            }
         })
 }
 
 @Composable
 fun CoffeeRegisterContent(
     navController: NavController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    viewModel: CoffeeRegistrationViewModel,
+    state: State<CoffeeRegistrationState>
 ) {
     Column(
         modifier = Modifier
@@ -63,10 +90,13 @@ fun CoffeeRegisterContent(
             color = TextBrownCoffee,
         )
         Spacer(modifier = Modifier.size(spacing_32))
-        CoffeeForm()
+        CoffeeForm(
+            viewModel = viewModel,
+            state = state
+        )
         CoffeeButtonFormAuth(
             btnClickable = {
-                navController.navigate(Screen.CoffeeListScreen.route)
+                viewModel.onEvent(CoffeeRegistrationEvent.Submit)
             },
             btnHint = {
                 navController.navigate(Screen.CoffeeLoginScreen.route)
@@ -79,18 +109,26 @@ fun CoffeeRegisterContent(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeeForm() {
+fun CoffeeForm(
+    viewModel: CoffeeRegistrationViewModel,
+    state: State<CoffeeRegistrationState>
+) {
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var repeatedPasswordVisible by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         TextField(
-            value = "",
-            onValueChange = {},
+            value = state.value.fullName,
+            onValueChange = {
+                viewModel.onEvent(CoffeeRegistrationEvent.FullNameChanged((it)))
+            },
+            isError = state.value.fullNameError != null,
             label = {
                 Text(
                     stringResource(id = R.string.tf_full_name),
@@ -113,10 +151,28 @@ fun CoffeeForm() {
             modifier = Modifier
                 .fillMaxWidth()
         )
+        if (state.value.fullNameError != null) {
+            Spacer(modifier = Modifier.size(spacing_8))
+            Text(
+                text = state.value.fullNameError!!.asString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = rubik,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Normal,
+                textAlign = TextAlign.Start,
+                fontSize = sizing_12,
+                color = RedCoffee,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
         Spacer(modifier = Modifier.size(spacing_16))
         TextField(
-            value = "",
-            onValueChange = {},
+            value = state.value.email,
+            onValueChange = {
+                viewModel.onEvent(CoffeeRegistrationEvent.EmailChanged((it)))
+            },
+            isError = state.value.emailError != null,
             label = {
                 Text(
                     stringResource(id = R.string.tf_email),
@@ -129,6 +185,9 @@ fun CoffeeForm() {
                     color = UnfocusedLabelTextCoffee
                 )
             },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email
+            ),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedLabelColor = UnfocusedLabelTextCoffee,
@@ -139,10 +198,29 @@ fun CoffeeForm() {
             modifier = Modifier
                 .fillMaxWidth()
         )
+        if (state.value.emailError != null) {
+            Spacer(modifier = Modifier.size(spacing_8))
+            Text(
+                text = state.value.emailError!!.asString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = rubik,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Normal,
+                textAlign = TextAlign.Start,
+                fontSize = sizing_12,
+                color = RedCoffee,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
         Spacer(modifier = Modifier.size(spacing_16))
+
         TextField(
-            value = "",
-            onValueChange = {},
+            value = state.value.password,
+            onValueChange = {
+                viewModel.onEvent(CoffeeRegistrationEvent.PasswordChanged((it)))
+            },
+            isError = state.value.passwordError != null,
             label = {
                 Text(
                     stringResource(id = R.string.tf_password),
@@ -155,6 +233,9 @@ fun CoffeeForm() {
                     color = UnfocusedLabelTextCoffee
                 )
             },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
+            ),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedLabelColor = UnfocusedLabelTextCoffee,
@@ -162,13 +243,40 @@ fun CoffeeForm() {
                 unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
                 focusedIndicatorColor = FocusedIndicatorBrownCoffee,
             ),
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        imageVector = getVisibilityPasswordIcon(passwordVisible),
+                        contentDescription = getVisibilityPasswordIconDescription(passwordVisible)
+                    )
+                }
+            },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
         )
+        if (state.value.passwordError != null) {
+            Spacer(modifier = Modifier.size(spacing_8))
+            Text(
+                text = state.value.passwordError!!.asString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = rubik,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Normal,
+                textAlign = TextAlign.Start,
+                fontSize = sizing_12,
+                color = RedCoffee,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
         Spacer(modifier = Modifier.size(spacing_16))
         TextField(
-            value = "",
-            onValueChange = {},
+            value = state.value.repeatedPassword,
+            onValueChange = {
+                viewModel.onEvent(CoffeeRegistrationEvent.RepeatedPasswordChanged((it)))
+            },
+            isError = state.value.repeatedPasswordError != null,
             label = {
                 Text(
                     stringResource(id = R.string.tf_repeat_password),
@@ -181,6 +289,9 @@ fun CoffeeForm() {
                     color = UnfocusedLabelTextCoffee
                 )
             },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
+            ),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedLabelColor = UnfocusedLabelTextCoffee,
@@ -188,8 +299,32 @@ fun CoffeeForm() {
                 unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
                 focusedIndicatorColor = FocusedIndicatorBrownCoffee,
             ),
+            trailingIcon = {
+                IconButton(onClick = { repeatedPasswordVisible = !repeatedPasswordVisible }) {
+                    Icon(
+                        imageVector = getVisibilityPasswordIcon(repeatedPasswordVisible),
+                        contentDescription = getVisibilityPasswordIconDescription(repeatedPasswordVisible)
+                    )
+                }
+            },
+            visualTransformation = if (repeatedPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
         )
+        if (state.value.repeatedPasswordError != null) {
+            Spacer(modifier = Modifier.size(spacing_8))
+            Text(
+                text = state.value.repeatedPasswordError!!.asString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = rubik,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Normal,
+                textAlign = TextAlign.Start,
+                fontSize = sizing_12,
+                color = RedCoffee,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
     }
 }
