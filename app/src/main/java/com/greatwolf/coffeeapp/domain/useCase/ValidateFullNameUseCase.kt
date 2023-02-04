@@ -17,7 +17,7 @@ class ValidateFullNameUseCase @Inject constructor() {
             )
         }
         val containsDigits = fullName.any { it.isDigit() }
-        if (!containsDigits) {
+        if (containsDigits) {
             return ValidationResult(
                 successful = false,
                 errorMessage = UiText.StringResource(

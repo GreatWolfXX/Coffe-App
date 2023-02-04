@@ -2,6 +2,8 @@ package com.greatwolf.coffeeapp.ui.screens.coffeeRegister
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.greatwolf.coffeeapp.domain.useCase.*
 import com.greatwolf.coffeeapp.domain.util.Result
 import com.greatwolf.coffeeapp.domain.util.ValidationEvent
@@ -80,7 +82,7 @@ class CoffeeRegistrationViewModel @Inject constructor(
     }
 
     private fun submitData() {
-        val fullNameResult = validateFullNameUseCase.execute(coffeeRegistrationState.value.email)
+        val fullNameResult = validateFullNameUseCase.execute(coffeeRegistrationState.value.fullName)
         val emailResult = validateEmailUseCase.execute(coffeeRegistrationState.value.email)
         val passwordResult = validatePasswordUseCase.execute(coffeeRegistrationState.value.password)
         val repeatedPasswordResult = validateRepeatedPasswordUseCase.execute(
@@ -116,19 +118,35 @@ class CoffeeRegistrationViewModel @Inject constructor(
                 coffeeRegistrationState.value.email,
                 coffeeRegistrationState.value.password
             )
-            when(response) {
+            when (response) {
                 is Result.Success -> {
-                    setCoffeeRegistrationState(
-                        state = coffeeRegistrationState.value.copy(
-                            isLoading = false
-                        )
-                    )
-                    validationEventChannel.send(ValidationEvent.Success)
+                    val response = response.data.user
+                    updateProfile(response)
                 }
                 is Result.Error -> setCoffeeRegistrationState(
                     state = coffeeRegistrationState.value.copy(
                         isLoading = false,
                         isError = response.exception.message
+                    )
+                )
+            }
+        }
+    }
+
+    private fun updateProfile(response: FirebaseUser?) {
+        val profileUpdates = userProfileChangeRequest {
+            displayName = coffeeRegistrationState.value.fullName
+        }
+        response?.updateProfile(profileUpdates)?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                viewModelScope.launch {
+                    validationEventChannel.send(ValidationEvent.Success)
+                }
+            } else {
+                setCoffeeRegistrationState(
+                    state = coffeeRegistrationState.value.copy(
+                        isLoading = false,
+                        isError = task.exception?.message
                     )
                 )
             }
