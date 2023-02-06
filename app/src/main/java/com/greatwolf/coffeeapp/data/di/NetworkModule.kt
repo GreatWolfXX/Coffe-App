@@ -3,8 +3,8 @@ package com.greatwolf.coffeeapp.data.di
 import com.google.firebase.auth.FirebaseAuth
 import com.greatwolf.coffeeapp.common.Constants.BASE_URL
 import com.greatwolf.coffeeapp.data.api.CoffeeApi
-import com.greatwolf.coffeeapp.data.repository.CoffeeRepositoryImpl
-import com.greatwolf.coffeeapp.domain.repository.CoffeeRepository
+import com.greatwolf.coffeeapp.data.repository.RepositoryImpl
+import com.greatwolf.coffeeapp.domain.repository.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,7 +37,7 @@ object NetworkModule {
     fun provideCoffeeRepository(
         coffeeApi: CoffeeApi,
         firebaseAuth: FirebaseAuth
-    ): CoffeeRepository {
-        return CoffeeRepositoryImpl(firebaseAuth, coffeeApi)
+    ): Repository {
+        return RepositoryImpl(firebaseAuth, coffeeApi)
     }
 }

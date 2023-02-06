@@ -1,8 +1,8 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeeLogin
+package com.greatwolf.coffeeapp.ui.screens.registerScreen
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -26,17 +27,17 @@ import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeeLoginScreen(
+fun RegisterScreen(
     navController: NavController,
-    viewModel: CoffeeLoginViewModel = hiltViewModel()
+    viewModel: RegisterScreenViewModel = hiltViewModel()
 ) {
-    val state = viewModel.coffeeLoginState.collectAsState()
+    val state = viewModel.registerScreenState.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(key1 = context) {
         viewModel.validationEvents.collect { event ->
             when (event) {
                 is ValidationEvent.Success -> {
-                    navController.navigate(Screen.CoffeeListScreen.route)
+                    navController.navigate(Screen.ListScreen.route)
                 }
             }
         }
@@ -44,7 +45,7 @@ fun CoffeeLoginScreen(
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
-                CoffeeLoginContent(
+                CoffeeRegisterContent(
                     navController = navController,
                     paddingValues = paddingValues,
                     viewModel = viewModel,
@@ -61,11 +62,11 @@ fun CoffeeLoginScreen(
 }
 
 @Composable
-fun CoffeeLoginContent(
+fun CoffeeRegisterContent(
     navController: NavController,
     paddingValues: PaddingValues,
-    viewModel: CoffeeLoginViewModel,
-    state: State<CoffeeLoginState>
+    viewModel: RegisterScreenViewModel,
+    state: State<RegisterScreenState>
 ) {
     Column(
         modifier = Modifier
@@ -73,19 +74,19 @@ fun CoffeeLoginContent(
     ) {
         CoffeeNavBar(
             onClickArrowBack = {
-                navController.navigate(Screen.CoffeeAuthScreen.route)
+                navController.navigate(Screen.AuthScreen.route)
             },
-            title = stringResource(id = R.string.btn_login)
+            title = stringResource(id = R.string.btn_register)
         )
         Spacer(modifier = Modifier.size(spacing_32))
         Text(
-            stringResource(id = R.string.welcome_back),
+            stringResource(id = R.string.create_new_account),
             style = MaterialTheme.typography.bodyLarge,
             fontFamily = roboto,
             fontWeight = FontWeight.Medium,
             fontStyle = FontStyle.Normal,
             textAlign = TextAlign.Start,
-            fontSize = sizing_32,
+            fontSize = sizing_28,
             color = TextBrownCoffee,
         )
         Spacer(modifier = Modifier.size(spacing_32))
@@ -95,42 +96,42 @@ fun CoffeeLoginContent(
         )
         CoffeeButtonFormAuth(
             btnClickable = {
-                viewModel.onEvent(CoffeeLoginEvent.Submit)
+                viewModel.onEvent(RegisterScreenEvent.Submit)
             },
             btnHint = {
-                navController.navigate(Screen.CoffeeRegisterScreen.route)
+                navController.navigate(Screen.LoginScreen.route)
             },
-            btnText = stringResource(id = R.string.btn_login),
-            firstHint = stringResource(id = R.string.t_register),
-            secondHint = stringResource(id = R.string.btn_register)
+            btnText = stringResource(id = R.string.btn_register),
+            firstHint = stringResource(id = R.string.t_login),
+            secondHint = stringResource(id = R.string.btn_login)
         )
     }
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoffeeForm(
-    viewModel: CoffeeLoginViewModel,
-    state: State<CoffeeLoginState>
+    viewModel: RegisterScreenViewModel,
+    state: State<RegisterScreenState>
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var repeatedPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         TextField(
-            value = state.value.email,
+            value = state.value.fullName,
             onValueChange = {
-                viewModel.onEvent(CoffeeLoginEvent.EmailChanged((it)))
+                viewModel.onEvent(RegisterScreenEvent.FullNameChanged((it)))
             },
-            isError = state.value.emailError != null,
+            isError = state.value.fullNameError != null,
             label = {
                 Text(
-                    stringResource(id = R.string.tf_email),
+                    stringResource(id = R.string.tf_full_name),
                     style = MaterialTheme.typography.bodyLarge,
                     fontFamily = rubik,
                     fontWeight = FontWeight.Normal,
@@ -150,7 +151,54 @@ fun CoffeeForm(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if(state.value.emailError != null) {
+        if (state.value.fullNameError != null) {
+            Spacer(modifier = Modifier.size(spacing_8))
+            Text(
+                text = state.value.fullNameError!!.asString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = rubik,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Normal,
+                textAlign = TextAlign.Start,
+                fontSize = sizing_12,
+                color = RedCoffee,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
+        Spacer(modifier = Modifier.size(spacing_16))
+        TextField(
+            value = state.value.email,
+            onValueChange = {
+                viewModel.onEvent(RegisterScreenEvent.EmailChanged((it)))
+            },
+            isError = state.value.emailError != null,
+            label = {
+                Text(
+                    stringResource(id = R.string.tf_email),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontFamily = rubik,
+                    fontWeight = FontWeight.Normal,
+                    fontStyle = FontStyle.Normal,
+                    textAlign = TextAlign.Center,
+                    fontSize = sizing_14,
+                    color = UnfocusedLabelTextCoffee
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email
+            ),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                unfocusedLabelColor = UnfocusedLabelTextCoffee,
+                focusedLabelColor = FocusedLabelTextCoffee,
+                unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
+                focusedIndicatorColor = FocusedIndicatorBrownCoffee,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+        if (state.value.emailError != null) {
             Spacer(modifier = Modifier.size(spacing_8))
             Text(
                 text = state.value.emailError!!.asString(),
@@ -166,10 +214,11 @@ fun CoffeeForm(
             )
         }
         Spacer(modifier = Modifier.size(spacing_16))
+
         TextField(
             value = state.value.password,
             onValueChange = {
-                viewModel.onEvent(CoffeeLoginEvent.PasswordChanged((it)))
+                viewModel.onEvent(RegisterScreenEvent.PasswordChanged((it)))
             },
             isError = state.value.passwordError != null,
             label = {
@@ -184,6 +233,9 @@ fun CoffeeForm(
                     color = UnfocusedLabelTextCoffee
                 )
             },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
+            ),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedLabelColor = UnfocusedLabelTextCoffee,
@@ -203,7 +255,7 @@ fun CoffeeForm(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if(state.value.passwordError != null) {
+        if (state.value.passwordError != null) {
             Spacer(modifier = Modifier.size(spacing_8))
             Text(
                 text = state.value.passwordError!!.asString(),
@@ -218,21 +270,61 @@ fun CoffeeForm(
                     .fillMaxWidth()
             )
         }
-        Spacer(modifier = Modifier.size(spacing_20))
-        Text(
-            stringResource(id = R.string.t_forgot_password),
-            style = MaterialTheme.typography.bodyLarge,
-            fontFamily = roboto,
-            fontWeight = FontWeight.Medium,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.End,
-            fontSize = sizing_14,
-            color = ButtonBrownCoffee,
+        Spacer(modifier = Modifier.size(spacing_16))
+        TextField(
+            value = state.value.repeatedPassword,
+            onValueChange = {
+                viewModel.onEvent(RegisterScreenEvent.RepeatedPasswordChanged((it)))
+            },
+            isError = state.value.repeatedPasswordError != null,
+            label = {
+                Text(
+                    stringResource(id = R.string.tf_repeat_password),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontFamily = rubik,
+                    fontWeight = FontWeight.Normal,
+                    fontStyle = FontStyle.Normal,
+                    textAlign = TextAlign.Center,
+                    fontSize = sizing_14,
+                    color = UnfocusedLabelTextCoffee
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
+            ),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                unfocusedLabelColor = UnfocusedLabelTextCoffee,
+                focusedLabelColor = FocusedLabelTextCoffee,
+                unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
+                focusedIndicatorColor = FocusedIndicatorBrownCoffee,
+            ),
+            trailingIcon = {
+                IconButton(onClick = { repeatedPasswordVisible = !repeatedPasswordVisible }) {
+                    Icon(
+                        imageVector = getVisibilityPasswordIcon(repeatedPasswordVisible),
+                        contentDescription = getVisibilityPasswordIconDescription(repeatedPasswordVisible)
+                    )
+                }
+            },
+            visualTransformation = if (repeatedPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-
-                }
         )
+        if (state.value.repeatedPasswordError != null) {
+            Spacer(modifier = Modifier.size(spacing_8))
+            Text(
+                text = state.value.repeatedPasswordError!!.asString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = rubik,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Normal,
+                textAlign = TextAlign.Start,
+                fontSize = sizing_12,
+                color = RedCoffee,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
     }
 }

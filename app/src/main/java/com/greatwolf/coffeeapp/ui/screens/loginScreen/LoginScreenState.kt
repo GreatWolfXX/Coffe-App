@@ -1,8 +1,8 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeeLogin
+package com.greatwolf.coffeeapp.ui.screens.loginScreen
 
 import com.greatwolf.coffeeapp.domain.util.UiText
 
-data class CoffeeLoginState(
+data class LoginScreenState(
     val email: String = "",
     val emailError: UiText? = null,
     val password: String = "",

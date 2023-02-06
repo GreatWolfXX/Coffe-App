@@ -1,4 +1,4 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeeAuth
+package com.greatwolf.coffeeapp.ui.screens.authScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -23,7 +23,7 @@ import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeeAuthScreen(
+fun AuthScreen(
     navController: NavController
 ) {
     Scaffold(
@@ -94,7 +94,7 @@ fun CoffeeButtonContainer(navController: NavController) {
         ) {
             Button(
                 onClick = {
-                    navController.navigate(Screen.CoffeeRegisterScreen.route)
+                    navController.navigate(Screen.RegisterScreen.route)
                 },
                 colors = ButtonDefaults.buttonColors(ButtonBrownCoffee),
                 modifier = Modifier
@@ -117,7 +117,7 @@ fun CoffeeButtonContainer(navController: NavController) {
             Spacer(modifier = Modifier.size(spacing_15))
             Button(
                 onClick = {
-                    navController.navigate(Screen.CoffeeLoginScreen.route)
+                    navController.navigate(Screen.LoginScreen.route)
                 },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 border = BorderStroke(spacing_1, ButtonBrownCoffee),

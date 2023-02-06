@@ -1,4 +1,4 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeeLogin
+package com.greatwolf.coffeeapp.ui.screens.loginScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,43 +14,43 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CoffeeLoginViewModel @Inject constructor(
+class LoginScreenViewModel @Inject constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
-    private val _coffeeLoginState: MutableStateFlow<CoffeeLoginState> =
-        MutableStateFlow(CoffeeLoginState())
+    private val _LoginScreenState: MutableStateFlow<LoginScreenState> =
+        MutableStateFlow(LoginScreenState())
 
-    val coffeeLoginState = _coffeeLoginState.stateIn(
+    val loginScreenState = _LoginScreenState.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        initialValue = CoffeeLoginState()
+        initialValue = LoginScreenState()
     )
 
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
-    fun onEvent(event: CoffeeLoginEvent) {
+    fun onEvent(event: LoginScreenEvent) {
         when (event) {
-            is CoffeeLoginEvent.EmailChanged -> {
+            is LoginScreenEvent.EmailChanged -> {
                 setCoffeeRegistrationState(
-                    state = coffeeLoginState.value.copy(
+                    state = loginScreenState.value.copy(
                         email = event.email
                     )
                 )
             }
-            is CoffeeLoginEvent.PasswordChanged -> {
+            is LoginScreenEvent.PasswordChanged -> {
                 setCoffeeRegistrationState(
-                    state = coffeeLoginState.value.copy(
+                    state = loginScreenState.value.copy(
                         password = event.password
                     )
                 )
             }
-            is CoffeeLoginEvent.Submit -> {
+            is LoginScreenEvent.Submit -> {
                 setCoffeeRegistrationState(
-                    state = coffeeLoginState.value.copy(
+                    state = loginScreenState.value.copy(
                         isLoading = true
                     )
                 )
@@ -59,15 +59,15 @@ class CoffeeLoginViewModel @Inject constructor(
         }
     }
 
-    private fun setCoffeeRegistrationState(state: CoffeeLoginState) {
-        _coffeeLoginState.update {
+    private fun setCoffeeRegistrationState(state: LoginScreenState) {
+        _LoginScreenState.update {
             state
         }
     }
 
     private fun submitData() {
-        val emailResult = validateEmailUseCase.execute(coffeeLoginState.value.email)
-        val passwordResult = validatePasswordUseCase.execute(coffeeLoginState.value.password)
+        val emailResult = validateEmailUseCase.execute(loginScreenState.value.email)
+        val passwordResult = validatePasswordUseCase.execute(loginScreenState.value.password)
 
         val hasError = listOf(
             emailResult,
@@ -76,7 +76,7 @@ class CoffeeLoginViewModel @Inject constructor(
 
         if (hasError) {
             setCoffeeRegistrationState(
-                coffeeLoginState.value.copy(
+                loginScreenState.value.copy(
                     emailError = emailResult.errorMessage,
                     passwordError = passwordResult.errorMessage,
                 )
@@ -89,20 +89,20 @@ class CoffeeLoginViewModel @Inject constructor(
     private fun loginUser() {
         viewModelScope.launch {
             val response = loginUseCase.invoke(
-                coffeeLoginState.value.email,
-                coffeeLoginState.value.password
+                loginScreenState.value.email,
+                loginScreenState.value.password
             )
             when(response) {
                 is Result.Success -> {
                     setCoffeeRegistrationState(
-                        state = coffeeLoginState.value.copy(
+                        state = loginScreenState.value.copy(
                             isLoading = false
                         )
                     )
                     validationEventChannel.send(ValidationEvent.Success)
                 }
                 is Result.Error -> setCoffeeRegistrationState(
-                    state = coffeeLoginState.value.copy(
+                    state = loginScreenState.value.copy(
                         isLoading = false,
                         isError = response.exception.message
                     )

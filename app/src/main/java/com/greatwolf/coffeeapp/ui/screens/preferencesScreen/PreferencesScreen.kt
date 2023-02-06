@@ -1,4 +1,4 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeePrefferences
+package com.greatwolf.coffeeapp.ui.screens.preferencesScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -22,9 +22,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -37,11 +34,11 @@ import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeePreferencesScreen(
+fun PreferencesScreen(
     navController: NavController,
-    viewModel: CoffeePreferencesViewModel = hiltViewModel()
+    viewModel: PreferencesScreenViewModel = hiltViewModel()
 ) {
-    val state = viewModel.coffeePreferencesState.collectAsState()
+    val state = viewModel.preferencesScreenState.collectAsState()
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
@@ -57,7 +54,7 @@ fun CoffeePreferencesScreen(
 @Composable
 fun CoffeePreferencesContent(
     navController: NavController,
-    state: CoffeePreferencesState,
+    state: PreferencesScreenState,
     paddingValues: PaddingValues
 ) {
     Column {
@@ -69,9 +66,9 @@ fun CoffeePreferencesContent(
             paddingValues = PaddingValues(horizontal = spacing_32)
         )
         when(state) {
-            is CoffeePreferencesState.Success -> CoffeePreferencesSuccess(state.coffee)
-            is CoffeePreferencesState.Loading -> LoadingView()
-            is CoffeePreferencesState.Error -> CoffeeError(exception = state.exception.message)
+            is PreferencesScreenState.Success -> CoffeePreferencesSuccess(state.coffee)
+            is PreferencesScreenState.Loading -> LoadingView()
+            is PreferencesScreenState.Error -> CoffeeError(exception = state.exception.message)
         }
     }
 }

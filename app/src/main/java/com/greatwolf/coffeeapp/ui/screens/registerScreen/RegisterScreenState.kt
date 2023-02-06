@@ -1,8 +1,8 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeeRegister
+package com.greatwolf.coffeeapp.ui.screens.registerScreen
 
 import com.greatwolf.coffeeapp.domain.util.UiText
 
-data class CoffeeRegistrationState(
+data class RegisterScreenState(
     val fullName: String = "",
     val fullNameError: UiText? = null,
     val email: String = "",

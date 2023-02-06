@@ -1,4 +1,4 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeeList
+package com.greatwolf.coffeeapp.ui.screens.listScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,11 +35,11 @@ import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoffeeListScreen(
+fun ListScreen(
     navController: NavController,
-    viewModel: CoffeeListViewModel = hiltViewModel()
+    viewModel: ListScreenViewModel = hiltViewModel()
     ) {
-    val state = viewModel.coffeeListState.collectAsState()
+    val state = viewModel.listScreenState.collectAsState()
     viewModel.fetchCoffees()
     Scaffold(
         content = { paddingValues ->
@@ -55,23 +55,23 @@ fun CoffeeListScreen(
 @Composable
 fun CoffeeListContent(
     navController: NavController,
-    state: CoffeeListState,
+    state: ListScreenState,
     paddingValues: PaddingValues) {
     Column {
         CoffeeNavBar(
             onClickArrowBack = {
-                navController.navigate(Screen.CoffeeAuthScreen.route)
+                navController.navigate(Screen.AuthScreen.route)
             },
             title = stringResource(id = R.string.title_menu),
             paddingValues = PaddingValues(horizontal = spacing_32)
         )
         when (state) {
-            is CoffeeListState.Success -> CoffeeListSuccess(
+            is ListScreenState.Success -> CoffeeListSuccess(
                 navController = navController,
                 listOfCoffees = state.listOfCoffees
             )
-            is CoffeeListState.Loading -> LoadingView()
-            is CoffeeListState.Error -> CoffeeError(exception = state.exception.message)
+            is ListScreenState.Loading -> LoadingView()
+            is ListScreenState.Error -> CoffeeError(exception = state.exception.message)
         }
     }
 }
@@ -104,7 +104,7 @@ fun CoffeeCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate(Screen.CoffeePreferencesScreen.route + "/${coffee.id}")
+                navController.navigate(Screen.PreferencesScreen.route + "/${coffee.id}")
             },
         shape = RoundedCornerShape(spacing_0),
         elevation = CardDefaults.cardElevation(spacing_8)

@@ -1,10 +1,10 @@
 package com.greatwolf.coffeeapp.domain.useCase
 
-import com.greatwolf.coffeeapp.domain.repository.CoffeeRepository
+import com.greatwolf.coffeeapp.domain.repository.Repository
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
-    private val coffeeRepository: CoffeeRepository
+    private val repository: Repository
 ) {
-    suspend operator fun invoke(email: String, password: String) = coffeeRepository.loginUser(email, password)
+    suspend operator fun invoke(email: String, password: String) = repository.loginUser(email, password)
 }

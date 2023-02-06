@@ -1,4 +1,4 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeePrefferences
+package com.greatwolf.coffeeapp.ui.screens.preferencesScreen
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -16,17 +16,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.update
 
 @HiltViewModel
-class CoffeePreferencesViewModel @Inject constructor(
+class PreferencesScreenViewModel @Inject constructor(
     private val getCoffeeUseCase: GetCoffeeUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val _coffeePreferencesState: MutableStateFlow<CoffeePreferencesState> =
-        MutableStateFlow(CoffeePreferencesState.Loading)
+    private val _PreferencesScreenState: MutableStateFlow<PreferencesScreenState> =
+        MutableStateFlow(PreferencesScreenState.Loading)
 
-    val coffeePreferencesState = _coffeePreferencesState.stateIn(
+    val preferencesScreenState = _PreferencesScreenState.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        initialValue = CoffeePreferencesState.Loading
+        initialValue = PreferencesScreenState.Loading
     )
 
     init {
@@ -44,13 +44,13 @@ class CoffeePreferencesViewModel @Inject constructor(
 
     private fun handleGetCoffeeByIdResponse(response: Result<Coffee>) {
         when(response) {
-            is Result.Success -> setCoffeePreferencesState(CoffeePreferencesState.Success(response.data))
-            is Result.Error -> setCoffeePreferencesState(CoffeePreferencesState.Error(response.exception))
+            is Result.Success -> setCoffeePreferencesState(PreferencesScreenState.Success(response.data))
+            is Result.Error -> setCoffeePreferencesState(PreferencesScreenState.Error(response.exception))
         }
     }
 
-    private fun setCoffeePreferencesState(state: CoffeePreferencesState) {
-        _coffeePreferencesState.update {
+    private fun setCoffeePreferencesState(state: PreferencesScreenState) {
+        _PreferencesScreenState.update {
             state
         }
     }

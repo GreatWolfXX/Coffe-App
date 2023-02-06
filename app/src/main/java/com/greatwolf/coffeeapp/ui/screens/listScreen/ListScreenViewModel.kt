@@ -1,4 +1,4 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeeList
+package com.greatwolf.coffeeapp.ui.screens.listScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,16 +14,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CoffeeListViewModel @Inject constructor(
+class ListScreenViewModel @Inject constructor(
     private val getCoffeesUseCase: GetCoffeesUseCase
 ) : ViewModel() {
-    private val _coffeeListState: MutableStateFlow<CoffeeListState> =
-        MutableStateFlow(CoffeeListState.Loading)
+    private val _ListScreenState: MutableStateFlow<ListScreenState> =
+        MutableStateFlow(ListScreenState.Loading)
 
-    val coffeeListState = _coffeeListState.stateIn(
+    val listScreenState = _ListScreenState.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        initialValue = CoffeeListState.Loading
+        initialValue = ListScreenState.Loading
     )
 
     fun fetchCoffees() {
@@ -35,13 +35,13 @@ class CoffeeListViewModel @Inject constructor(
 
     private fun handleGetCoffeesResponse(response: Result<List<Coffee>>) {
         when (response) {
-            is Result.Success -> setCoffeeListState(CoffeeListState.Success(response.data))
-            is Result.Error -> setCoffeeListState(CoffeeListState.Error(response.exception))
+            is Result.Success -> setCoffeeListState(ListScreenState.Success(response.data))
+            is Result.Error -> setCoffeeListState(ListScreenState.Error(response.exception))
         }
     }
 
-    private fun setCoffeeListState(state: CoffeeListState) {
-        _coffeeListState.update {
+    private fun setCoffeeListState(state: ListScreenState) {
+        _ListScreenState.update {
             state
         }
     }

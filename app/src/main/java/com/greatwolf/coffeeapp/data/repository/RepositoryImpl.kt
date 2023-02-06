@@ -5,15 +5,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.greatwolf.coffeeapp.data.api.CoffeeApi
 import com.greatwolf.coffeeapp.data.mapper.toDomain
 import com.greatwolf.coffeeapp.domain.model.Coffee
-import com.greatwolf.coffeeapp.domain.repository.CoffeeRepository
+import com.greatwolf.coffeeapp.domain.repository.Repository
 import com.greatwolf.coffeeapp.domain.util.Result
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class CoffeeRepositoryImpl @Inject constructor(
+class RepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val coffeeApi: CoffeeApi
-) : CoffeeRepository {
+) : Repository {
     override suspend fun getCoffees(): Result<List<Coffee>> {
         return try {
             Result.Success(coffeeApi.getCoffees().toDomain())

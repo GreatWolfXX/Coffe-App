@@ -1,4 +1,4 @@
-package com.greatwolf.coffeeapp.ui.screens.coffeeRegister
+package com.greatwolf.coffeeapp.ui.screens.registerScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CoffeeRegistrationViewModel @Inject constructor(
+class RegisterScreenViewModel @Inject constructor(
     private val validateFullNameUseCase: ValidateFullNameUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
@@ -22,51 +22,51 @@ class CoffeeRegistrationViewModel @Inject constructor(
     private val registrationUseCase: RegistrationUseCase
 ) : ViewModel() {
 
-    private val _coffeeRegistrationState: MutableStateFlow<CoffeeRegistrationState> =
-        MutableStateFlow(CoffeeRegistrationState())
+    private val _registerScreenState: MutableStateFlow<RegisterScreenState> =
+        MutableStateFlow(RegisterScreenState())
 
-    val coffeeRegistrationState = _coffeeRegistrationState.stateIn(
+    val registerScreenState = _registerScreenState.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        initialValue = CoffeeRegistrationState()
+        initialValue = RegisterScreenState()
     )
 
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
-    fun onEvent(event: CoffeeRegistrationEvent) {
+    fun onEvent(event: RegisterScreenEvent) {
         when (event) {
-            is CoffeeRegistrationEvent.FullNameChanged -> {
+            is RegisterScreenEvent.FullNameChanged -> {
                 setCoffeeRegistrationState(
-                    state = coffeeRegistrationState.value.copy(
+                    state = registerScreenState.value.copy(
                         fullName = event.fullName
                     )
                 )
             }
-            is CoffeeRegistrationEvent.EmailChanged -> {
+            is RegisterScreenEvent.EmailChanged -> {
                 setCoffeeRegistrationState(
-                    state = coffeeRegistrationState.value.copy(
+                    state = registerScreenState.value.copy(
                         email = event.email
                     )
                 )
             }
-            is CoffeeRegistrationEvent.PasswordChanged -> {
+            is RegisterScreenEvent.PasswordChanged -> {
                 setCoffeeRegistrationState(
-                    state = coffeeRegistrationState.value.copy(
+                    state = registerScreenState.value.copy(
                         password = event.password
                     )
                 )
             }
-            is CoffeeRegistrationEvent.RepeatedPasswordChanged -> {
+            is RegisterScreenEvent.RepeatedPasswordChanged -> {
                 setCoffeeRegistrationState(
-                    state = coffeeRegistrationState.value.copy(
+                    state = registerScreenState.value.copy(
                         repeatedPassword = event.repeatedPassword
                     )
                 )
             }
-            is CoffeeRegistrationEvent.Submit -> {
+            is RegisterScreenEvent.Submit -> {
                 setCoffeeRegistrationState(
-                    state = coffeeRegistrationState.value.copy(
+                    state = registerScreenState.value.copy(
                         isLoading = true
                     )
                 )
@@ -75,19 +75,19 @@ class CoffeeRegistrationViewModel @Inject constructor(
         }
     }
 
-    private fun setCoffeeRegistrationState(state: CoffeeRegistrationState) {
-        _coffeeRegistrationState.update {
+    private fun setCoffeeRegistrationState(state: RegisterScreenState) {
+        _registerScreenState.update {
             state
         }
     }
 
     private fun submitData() {
-        val fullNameResult = validateFullNameUseCase.execute(coffeeRegistrationState.value.fullName)
-        val emailResult = validateEmailUseCase.execute(coffeeRegistrationState.value.email)
-        val passwordResult = validatePasswordUseCase.execute(coffeeRegistrationState.value.password)
+        val fullNameResult = validateFullNameUseCase.execute(registerScreenState.value.fullName)
+        val emailResult = validateEmailUseCase.execute(registerScreenState.value.email)
+        val passwordResult = validatePasswordUseCase.execute(registerScreenState.value.password)
         val repeatedPasswordResult = validateRepeatedPasswordUseCase.execute(
-            coffeeRegistrationState.value.password,
-            coffeeRegistrationState.value.repeatedPassword
+            registerScreenState.value.password,
+            registerScreenState.value.repeatedPassword
         )
 
         val hasError = listOf(
@@ -99,7 +99,7 @@ class CoffeeRegistrationViewModel @Inject constructor(
 
         if (hasError) {
             setCoffeeRegistrationState(
-                coffeeRegistrationState.value.copy(
+                registerScreenState.value.copy(
                     fullNameError = fullNameResult.errorMessage,
                     emailError = emailResult.errorMessage,
                     passwordError = passwordResult.errorMessage,
@@ -115,8 +115,8 @@ class CoffeeRegistrationViewModel @Inject constructor(
     private fun registrationUser() {
         viewModelScope.launch {
             val response = registrationUseCase.invoke(
-                coffeeRegistrationState.value.email,
-                coffeeRegistrationState.value.password
+                registerScreenState.value.email,
+                registerScreenState.value.password
             )
             when (response) {
                 is Result.Success -> {
@@ -124,7 +124,7 @@ class CoffeeRegistrationViewModel @Inject constructor(
                     updateProfile(response)
                 }
                 is Result.Error -> setCoffeeRegistrationState(
-                    state = coffeeRegistrationState.value.copy(
+                    state = registerScreenState.value.copy(
                         isLoading = false,
                         isError = response.exception.message
                     )
@@ -135,7 +135,7 @@ class CoffeeRegistrationViewModel @Inject constructor(
 
     private fun updateProfile(response: FirebaseUser?) {
         val profileUpdates = userProfileChangeRequest {
-            displayName = coffeeRegistrationState.value.fullName
+            displayName = registerScreenState.value.fullName
         }
         response?.updateProfile(profileUpdates)?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -144,7 +144,7 @@ class CoffeeRegistrationViewModel @Inject constructor(
                 }
             } else {
                 setCoffeeRegistrationState(
-                    state = coffeeRegistrationState.value.copy(
+                    state = registerScreenState.value.copy(
                         isLoading = false,
                         isError = task.exception?.message
                     )

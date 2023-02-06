@@ -28,11 +28,11 @@ import androidx.navigation.compose.rememberNavController
 import com.greatwolf.coffeeapp.domain.model.BottomNavItem
 import com.greatwolf.coffeeapp.ui.Screen
 import com.greatwolf.coffeeapp.ui.components.BottomNavBar
-import com.greatwolf.coffeeapp.ui.screens.coffeeAuth.CoffeeAuthScreen
-import com.greatwolf.coffeeapp.ui.screens.coffeeList.CoffeeListScreen
-import com.greatwolf.coffeeapp.ui.screens.coffeeLogin.CoffeeLoginScreen
-import com.greatwolf.coffeeapp.ui.screens.coffeePrefferences.CoffeePreferencesScreen
-import com.greatwolf.coffeeapp.ui.screens.coffeeRegister.CoffeeRegisterScreen
+import com.greatwolf.coffeeapp.ui.screens.authScreen.AuthScreen
+import com.greatwolf.coffeeapp.ui.screens.listScreen.ListScreen
+import com.greatwolf.coffeeapp.ui.screens.loginScreen.LoginScreen
+import com.greatwolf.coffeeapp.ui.screens.preferencesScreen.PreferencesScreen
+import com.greatwolf.coffeeapp.ui.screens.registerScreen.RegisterScreen
 import com.greatwolf.coffeeapp.ui.theme.CoffeeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -62,19 +62,19 @@ fun App() {
 
     val bottomNavItems = listOf(
         BottomNavItem(
-            route = Screen.CoffeeListScreen.route, // temporary solution, next will be a screen home
+            route = Screen.ListScreen.route, // temporary solution, next will be a screen home
             icon = ImageVector.vectorResource(id = R.drawable.ic_home)
         ),
         BottomNavItem(
-            route = Screen.CoffeeListScreen.route, // temporary solution, next will be a screen map
+            route = Screen.ListScreen.route, // temporary solution, next will be a screen map
             icon = ImageVector.vectorResource(id = R.drawable.ic_map)
         ),
         BottomNavItem(
-            route = Screen.CoffeeListScreen.route, // temporary solution, next will be a screen cart
+            route = Screen.ListScreen.route, // temporary solution, next will be a screen cart
             icon = ImageVector.vectorResource(id = R.drawable.ic_cart)
         ),
         BottomNavItem(
-            route = Screen.CoffeeListScreen.route, // temporary solution, next will be a screen profile
+            route = Screen.ListScreen.route, // temporary solution, next will be a screen profile
             icon = ImageVector.vectorResource(id = R.drawable.ic_profile)
         )
     )
@@ -85,10 +85,10 @@ fun App() {
     Log.d("gwolf", navBackStackEntry?.destination?.route.toString())
 
     showBottomBar = when (navBackStackEntry?.destination?.route) {
-        Screen.CoffeeAuthScreen.route -> false
-        Screen.CoffeeRegisterScreen.route -> false
-        Screen.CoffeeLoginScreen.route -> false
-        Screen.CoffeePreferencesScreen.route + "/{coffeeId}" -> false
+        Screen.AuthScreen.route -> false
+        Screen.RegisterScreen.route -> false
+        Screen.LoginScreen.route -> false
+        Screen.PreferencesScreen.route + "/{coffeeId}" -> false
         else -> true
     }
 
@@ -116,22 +116,22 @@ fun NavigationHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.CoffeeAuthScreen.route
+        startDestination = Screen.AuthScreen.route
     ) {
-        composable(route = Screen.CoffeeListScreen.route) {
-            CoffeeListScreen(navController = navController)
+        composable(route = Screen.ListScreen.route) {
+            ListScreen(navController = navController)
         }
-        composable(route = Screen.CoffeePreferencesScreen.route + "/{coffeeId}") {
-            CoffeePreferencesScreen(navController = navController)
+        composable(route = Screen.PreferencesScreen.route + "/{coffeeId}") {
+            PreferencesScreen(navController = navController)
         }
-        composable(route = Screen.CoffeeAuthScreen.route) {
-            CoffeeAuthScreen(navController = navController)
+        composable(route = Screen.AuthScreen.route) {
+            AuthScreen(navController = navController)
         }
-        composable(route = Screen.CoffeeLoginScreen.route) {
-            CoffeeLoginScreen(navController = navController)
+        composable(route = Screen.LoginScreen.route) {
+            LoginScreen(navController = navController)
         }
-        composable(route = Screen.CoffeeRegisterScreen.route) {
-            CoffeeRegisterScreen(navController = navController)
+        composable(route = Screen.RegisterScreen.route) {
+            RegisterScreen(navController = navController)
         }
     }
 }
