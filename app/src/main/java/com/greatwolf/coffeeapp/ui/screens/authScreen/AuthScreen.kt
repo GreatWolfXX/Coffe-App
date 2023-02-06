@@ -29,7 +29,7 @@ fun AuthScreen(
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
-                CoffeeAuthContent(
+                AuthContent(
                     navController = navController,
                     paddingValues = paddingValues
                 )
@@ -39,7 +39,7 @@ fun AuthScreen(
 }
 
 @Composable
-fun CoffeeAuthContent(
+fun AuthContent(
     navController: NavController,
     paddingValues: PaddingValues
 ) {
@@ -78,12 +78,12 @@ fun CoffeeAuthContent(
                     end = spacing_48
                 )
         )
-        CoffeeButtonContainer(navController = navController)
+        ButtonContainer(navController = navController)
     }
 }
 
 @Composable
-fun CoffeeButtonContainer(navController: NavController) {
+fun ButtonContainer(navController: NavController) {
     Column(
         modifier = Modifier
             .padding(horizontal = spacing_32, vertical = spacing_64)

@@ -15,10 +15,13 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.greatwolf.coffeeapp.R
-import com.greatwolf.coffeeapp.ui.theme.*
+import com.greatwolf.coffeeapp.ui.theme.TextBrownCoffee
+import com.greatwolf.coffeeapp.ui.theme.roboto
+import com.greatwolf.coffeeapp.ui.theme.sizing_22
+import com.greatwolf.coffeeapp.ui.theme.spacing_10
 
 @Composable
-fun CoffeeNavBar(
+fun NavBar(
     onClickArrowBack: () -> Unit,
     title: String,
     paddingValues: PaddingValues = PaddingValues()

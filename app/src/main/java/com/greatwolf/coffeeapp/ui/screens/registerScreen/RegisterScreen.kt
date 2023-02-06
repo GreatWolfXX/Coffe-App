@@ -2,17 +2,21 @@ package com.greatwolf.coffeeapp.ui.screens.registerScreen
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -45,7 +49,7 @@ fun RegisterScreen(
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
-                CoffeeRegisterContent(
+                RegisterContent(
                     navController = navController,
                     paddingValues = paddingValues,
                     viewModel = viewModel,
@@ -62,7 +66,7 @@ fun RegisterScreen(
 }
 
 @Composable
-fun CoffeeRegisterContent(
+fun RegisterContent(
     navController: NavController,
     paddingValues: PaddingValues,
     viewModel: RegisterScreenViewModel,
@@ -72,7 +76,7 @@ fun CoffeeRegisterContent(
         modifier = Modifier
             .padding(horizontal = spacing_32)
     ) {
-        CoffeeNavBar(
+        NavBar(
             onClickArrowBack = {
                 navController.navigate(Screen.AuthScreen.route)
             },
@@ -90,11 +94,11 @@ fun CoffeeRegisterContent(
             color = TextBrownCoffee,
         )
         Spacer(modifier = Modifier.size(spacing_32))
-        CoffeeForm(
+        RegisterForm(
             viewModel = viewModel,
             state = state
         )
-        CoffeeButtonFormAuth(
+        ButtonFormAuth(
             btnClickable = {
                 viewModel.onEvent(RegisterScreenEvent.Submit)
             },
@@ -109,14 +113,15 @@ fun CoffeeRegisterContent(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun CoffeeForm(
+fun RegisterForm(
     viewModel: RegisterScreenViewModel,
     state: State<RegisterScreenState>
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     var repeatedPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
         modifier = Modifier
@@ -141,6 +146,11 @@ fun CoffeeForm(
                     color = UnfocusedLabelTextCoffee
                 )
             },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardController?.hide() }
+            ),
+            singleLine = true,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedLabelColor = UnfocusedLabelTextCoffee,
@@ -186,8 +196,13 @@ fun CoffeeForm(
                 )
             },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Done
             ),
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardController?.hide() }
+            ),
+            singleLine = true,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedLabelColor = UnfocusedLabelTextCoffee,
@@ -234,8 +249,13 @@ fun CoffeeForm(
                 )
             },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
             ),
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardController?.hide() }
+            ),
+            singleLine = true,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedLabelColor = UnfocusedLabelTextCoffee,
@@ -290,8 +310,13 @@ fun CoffeeForm(
                 )
             },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
             ),
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardController?.hide() }
+            ),
+            singleLine = true,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedLabelColor = UnfocusedLabelTextCoffee,
@@ -303,7 +328,9 @@ fun CoffeeForm(
                 IconButton(onClick = { repeatedPasswordVisible = !repeatedPasswordVisible }) {
                     Icon(
                         imageVector = getVisibilityPasswordIcon(repeatedPasswordVisible),
-                        contentDescription = getVisibilityPasswordIconDescription(repeatedPasswordVisible)
+                        contentDescription = getVisibilityPasswordIconDescription(
+                            repeatedPasswordVisible
+                        )
                     )
                 }
             },

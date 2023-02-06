@@ -17,7 +17,7 @@ import com.greatwolf.coffeeapp.ui.theme.*
 
 
 @Composable
-fun CoffeeButtonFormAuth(
+fun ButtonFormAuth(
     btnClickable: () -> Unit,
     btnHint: () -> Unit,
     btnText: String,

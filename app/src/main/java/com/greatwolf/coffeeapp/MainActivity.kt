@@ -25,12 +25,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.greatwolf.coffeeapp.domain.model.BottomNavItem
 import com.greatwolf.coffeeapp.ui.Screen
 import com.greatwolf.coffeeapp.ui.components.BottomNavBar
 import com.greatwolf.coffeeapp.ui.screens.authScreen.AuthScreen
 import com.greatwolf.coffeeapp.ui.screens.listScreen.ListScreen
 import com.greatwolf.coffeeapp.ui.screens.loginScreen.LoginScreen
+import com.greatwolf.coffeeapp.ui.screens.passwordRecoveryScreen.PasswordRecoveryScreen
 import com.greatwolf.coffeeapp.ui.screens.preferencesScreen.PreferencesScreen
 import com.greatwolf.coffeeapp.ui.screens.registerScreen.RegisterScreen
 import com.greatwolf.coffeeapp.ui.theme.CoffeeAppTheme
@@ -41,6 +43,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
+        FirebaseAuth.getInstance().signOut() // temporary solution
         setContent {
             CoffeeAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -132,6 +135,9 @@ fun NavigationHost(
         }
         composable(route = Screen.RegisterScreen.route) {
             RegisterScreen(navController = navController)
+        }
+        composable(route = Screen.PasswordRecoveryScreen.route) {
+            PasswordRecoveryScreen(navController = navController)
         }
     }
 }

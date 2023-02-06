@@ -1,7 +1,6 @@
-package com.greatwolf.coffeeapp.ui.screens.loginScreen
+package com.greatwolf.coffeeapp.ui.screens.passwordRecoveryScreen
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,30 +18,29 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.util.ValidationEvent
 import com.greatwolf.coffeeapp.ui.Screen
-import com.greatwolf.coffeeapp.ui.components.*
+import com.greatwolf.coffeeapp.ui.components.LoadingView
+import com.greatwolf.coffeeapp.ui.components.NavBar
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
+fun PasswordRecoveryScreen(
     navController: NavController,
-    viewModel: LoginScreenViewModel = hiltViewModel()
+    viewModel: PasswordRecoveryScreenViewModel = hiltViewModel()
 ) {
-    val state = viewModel.loginScreenState.collectAsState()
+    val state = viewModel.passwordRecoveryScreenState.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(key1 = context) {
         viewModel.validationEvents.collect { event ->
             when (event) {
                 is ValidationEvent.Success -> {
-                    navController.navigate(Screen.ListScreen.route)
+                    navController.navigate(Screen.LoginScreen.route)
                 }
             }
         }
@@ -50,28 +48,28 @@ fun LoginScreen(
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
-                LoginContent(
+                PasswordRecoveryContent(
                     navController = navController,
                     paddingValues = paddingValues,
                     viewModel = viewModel,
                     state = state
                 )
-            }
-            if (state.value.isLoading) {
-                LoadingView()
-            }
-            if (!state.value.isError.isNullOrEmpty()) {
-                Toast.makeText(context, state.value.isError, Toast.LENGTH_SHORT).show()
+                if (state.value.isLoading) {
+                    LoadingView()
+                }
+                if (!state.value.isError.isNullOrEmpty()) {
+                    Toast.makeText(context, state.value.isError, Toast.LENGTH_SHORT).show()
+                }
             }
         })
 }
 
 @Composable
-fun LoginContent(
+fun PasswordRecoveryContent(
     navController: NavController,
     paddingValues: PaddingValues,
-    viewModel: LoginScreenViewModel,
-    state: State<LoginScreenState>
+    viewModel: PasswordRecoveryScreenViewModel,
+    state: State<PasswordRecoveryScreenState>
 ) {
     Column(
         modifier = Modifier
@@ -81,47 +79,35 @@ fun LoginContent(
             onClickArrowBack = {
                 navController.navigate(Screen.AuthScreen.route)
             },
-            title = stringResource(id = R.string.btn_login)
+            title = stringResource(id = R.string.title_password_recovery)
         )
         Spacer(modifier = Modifier.size(spacing_32))
         Text(
-            stringResource(id = R.string.welcome_back),
+            stringResource(id = R.string.recovery_your_password),
             style = MaterialTheme.typography.bodyLarge,
             fontFamily = roboto,
             fontWeight = FontWeight.Medium,
             fontStyle = FontStyle.Normal,
             textAlign = TextAlign.Start,
-            fontSize = sizing_32,
+            fontSize = sizing_28,
             color = TextBrownCoffee,
         )
         Spacer(modifier = Modifier.size(spacing_32))
-        LoginForm(
-            navController = navController,
+        PasswordRecoveryForm(
             viewModel = viewModel,
             state = state
         )
-        ButtonFormAuth(
-            btnClickable = {
-                viewModel.onEvent(LoginScreenEvent.Submit)
-            },
-            btnHint = {
-                navController.navigate(Screen.RegisterScreen.route)
-            },
-            btnText = stringResource(id = R.string.btn_login),
-            firstHint = stringResource(id = R.string.t_register),
-            secondHint = stringResource(id = R.string.btn_register)
+        ButtonRecoveryPassword(
+            viewModel = viewModel
         )
     }
 }
 
-
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun LoginForm(
-    navController: NavController,
-    viewModel: LoginScreenViewModel,
-    state: State<LoginScreenState>
+fun PasswordRecoveryForm(
+    viewModel: PasswordRecoveryScreenViewModel,
+    state: State<PasswordRecoveryScreenState>
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -130,11 +116,11 @@ fun LoginForm(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         TextField(
             value = state.value.email,
             onValueChange = {
-                viewModel.onEvent(LoginScreenEvent.EmailChanged((it)))
+                viewModel.onEvent(PasswordRecoveryScreenEvent.EmailChanged((it)))
             },
             isError = state.value.emailError != null,
             label = {
@@ -156,7 +142,6 @@ fun LoginForm(
             keyboardActions = KeyboardActions(
                 onDone = { keyboardController?.hide() }
             ),
-            singleLine = true,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedLabelColor = UnfocusedLabelTextCoffee,
@@ -167,7 +152,7 @@ fun LoginForm(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if(state.value.emailError != null) {
+        if (state.value.emailError != null) {
             Spacer(modifier = Modifier.size(spacing_8))
             Text(
                 text = state.value.emailError!!.asString(),
@@ -182,82 +167,38 @@ fun LoginForm(
                     .fillMaxWidth()
             )
         }
-        Spacer(modifier = Modifier.size(spacing_16))
-        TextField(
-            value = state.value.password,
-            onValueChange = {
-                viewModel.onEvent(LoginScreenEvent.PasswordChanged((it)))
+    }
+}
+
+@Composable
+fun ButtonRecoveryPassword(
+    viewModel: PasswordRecoveryScreenViewModel
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.size(spacing_40))
+        Button(
+            onClick = {
+                viewModel.onEvent(PasswordRecoveryScreenEvent.Submit)
             },
-            isError = state.value.passwordError != null,
-            label = {
-                Text(
-                    stringResource(id = R.string.tf_password),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontFamily = rubik,
-                    fontWeight = FontWeight.Normal,
-                    fontStyle = FontStyle.Normal,
-                    textAlign = TextAlign.Center,
-                    fontSize = sizing_14,
-                    color = UnfocusedLabelTextCoffee
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
-            ),
-            singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
-                unfocusedLabelColor = UnfocusedLabelTextCoffee,
-                focusedLabelColor = FocusedLabelTextCoffee,
-                unfocusedIndicatorColor = UnfocusedIndicatorBrownCoffee,
-                focusedIndicatorColor = FocusedIndicatorBrownCoffee,
-            ),
-            trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        imageVector = getVisibilityPasswordIcon(passwordVisible),
-                        contentDescription = getVisibilityPasswordIconDescription(passwordVisible)
-                    )
-                }
-            },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            colors = ButtonDefaults.buttonColors(ButtonBrownCoffee),
             modifier = Modifier
                 .fillMaxWidth()
-        )
-        if(state.value.passwordError != null) {
-            Spacer(modifier = Modifier.size(spacing_8))
+        ) {
             Text(
-                text = state.value.passwordError!!.asString(),
+                stringResource(id = R.string.btn_recover_password),
                 style = MaterialTheme.typography.bodyLarge,
-                fontFamily = rubik,
-                fontWeight = FontWeight.Normal,
+                fontFamily = roboto,
+                fontWeight = FontWeight.Medium,
                 fontStyle = FontStyle.Normal,
-                textAlign = TextAlign.Start,
-                fontSize = sizing_12,
-                color = RedCoffee,
+                textAlign = TextAlign.Center,
+                fontSize = sizing_14,
+                color = Color.White,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .align(alignment = Alignment.CenterVertically)
+                    .padding(vertical = spacing_8)
             )
         }
-        Spacer(modifier = Modifier.size(spacing_20))
-        Text(
-            stringResource(id = R.string.t_forgot_password),
-            style = MaterialTheme.typography.bodyLarge,
-            fontFamily = roboto,
-            fontWeight = FontWeight.Medium,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.End,
-            fontSize = sizing_14,
-            color = ButtonBrownCoffee,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    navController.navigate(Screen.PasswordRecoveryScreen.route)
-                }
-        )
     }
 }

@@ -28,9 +28,7 @@ import coil.compose.AsyncImage
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.model.Coffee
 import com.greatwolf.coffeeapp.ui.Screen
-import com.greatwolf.coffeeapp.ui.components.CoffeeError
-import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
-import com.greatwolf.coffeeapp.ui.components.LoadingView
+import com.greatwolf.coffeeapp.ui.components.*
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +41,7 @@ fun ListScreen(
     viewModel.fetchCoffees()
     Scaffold(
         content = { paddingValues ->
-            CoffeeListContent(
+            ListContent(
                 navController,
                 state = state.value,
                 paddingValues = paddingValues
@@ -53,12 +51,12 @@ fun ListScreen(
 
 
 @Composable
-fun CoffeeListContent(
+fun ListContent(
     navController: NavController,
     state: ListScreenState,
     paddingValues: PaddingValues) {
     Column {
-        CoffeeNavBar(
+        NavBar(
             onClickArrowBack = {
                 navController.navigate(Screen.AuthScreen.route)
             },
@@ -66,19 +64,19 @@ fun CoffeeListContent(
             paddingValues = PaddingValues(horizontal = spacing_32)
         )
         when (state) {
-            is ListScreenState.Success -> CoffeeListSuccess(
+            is ListScreenState.Success -> ListSuccess(
                 navController = navController,
                 listOfCoffees = state.listOfCoffees
             )
             is ListScreenState.Loading -> LoadingView()
-            is ListScreenState.Error -> CoffeeError(exception = state.exception.message)
+            is ListScreenState.Error -> ErrorView(exception = state.exception.message)
         }
     }
 }
 
 
 @Composable
-fun CoffeeListSuccess(
+fun ListSuccess(
     navController: NavController,
     listOfCoffees: List<Coffee>
 ) {
@@ -87,7 +85,7 @@ fun CoffeeListSuccess(
         modifier = Modifier.fillMaxWidth()
     ) {
         items(listOfCoffees) { coffee ->
-            CoffeeCard(
+            Card(
                 navController,
                 coffee = coffee
             )
@@ -96,7 +94,7 @@ fun CoffeeListSuccess(
 }
 
 @Composable
-fun CoffeeCard(
+fun Card(
     navController: NavController,
     coffee: Coffee
 ) {

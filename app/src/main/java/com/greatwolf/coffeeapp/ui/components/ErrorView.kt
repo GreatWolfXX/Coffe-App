@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import com.greatwolf.coffeeapp.ui.theme.spacing_16
 
 @Composable
-fun CoffeeError(exception: String?) {
+fun ErrorView(exception: String?) {
     exception?.let {
         Column(
             modifier = Modifier.padding(spacing_16),

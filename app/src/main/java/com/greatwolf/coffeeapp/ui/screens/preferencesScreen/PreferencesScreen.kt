@@ -27,9 +27,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.model.Coffee
-import com.greatwolf.coffeeapp.ui.components.CoffeeError
-import com.greatwolf.coffeeapp.ui.components.CoffeeNavBar
-import com.greatwolf.coffeeapp.ui.components.LoadingView
+import com.greatwolf.coffeeapp.ui.components.*
 import com.greatwolf.coffeeapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +40,7 @@ fun PreferencesScreen(
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
-                CoffeePreferencesContent(
+                PreferencesContent(
                     navController = navController,
                     state = state.value,
                     paddingValues = paddingValues
@@ -52,13 +50,13 @@ fun PreferencesScreen(
 }
 
 @Composable
-fun CoffeePreferencesContent(
+fun PreferencesContent(
     navController: NavController,
     state: PreferencesScreenState,
     paddingValues: PaddingValues
 ) {
     Column {
-        CoffeeNavBar(
+        NavBar(
             onClickArrowBack = {
                 navController.popBackStack()
             },
@@ -66,15 +64,15 @@ fun CoffeePreferencesContent(
             paddingValues = PaddingValues(horizontal = spacing_32)
         )
         when(state) {
-            is PreferencesScreenState.Success -> CoffeePreferencesSuccess(state.coffee)
+            is PreferencesScreenState.Success -> PreferencesSuccess(state.coffee)
             is PreferencesScreenState.Loading -> LoadingView()
-            is PreferencesScreenState.Error -> CoffeeError(exception = state.exception.message)
+            is PreferencesScreenState.Error -> ErrorView(exception = state.exception.message)
         }
     }
 }
 
 @Composable
-fun CoffeePreferencesSuccess(
+fun PreferencesSuccess(
     coffee: Coffee
 ) {
     Box(
@@ -100,10 +98,10 @@ fun CoffeePreferencesSuccess(
     Column(
         modifier = Modifier
     ) {
-        FirstPreferencesCoffee(coffee)
-        SecondPreferencesCoffee()
-        ThirdPreferencesCoffee()
-        FourthPreferencesCoffee()
+        FirstPreferences(coffee)
+        SecondPreferences()
+        ThirdPreferences()
+        FourthPreferences()
         Spacer(modifier = Modifier.size(spacing_24))
         Row(
             modifier = Modifier
@@ -175,7 +173,7 @@ fun CoffeePreferencesSuccess(
 }
 
 @Composable
-fun FirstPreferencesCoffee(coffee: Coffee) {
+fun FirstPreferences(coffee: Coffee) {
     Spacer(modifier = Modifier.size(spacing_20))
     Row(
         modifier = Modifier
@@ -275,7 +273,7 @@ fun FirstPreferencesCoffee(coffee: Coffee) {
 }
 
 @Composable
-fun SecondPreferencesCoffee() {
+fun SecondPreferences() {
     Spacer(modifier = Modifier.size(spacing_20))
     Row(
         modifier = Modifier
@@ -329,7 +327,7 @@ fun SecondPreferencesCoffee() {
 }
 
 @Composable
-fun ThirdPreferencesCoffee() {
+fun ThirdPreferences() {
     Spacer(modifier = Modifier.size(spacing_20))
     Row(
         modifier = Modifier
@@ -387,7 +385,7 @@ fun ThirdPreferencesCoffee() {
 }
 
 @Composable
-fun FourthPreferencesCoffee() {
+fun FourthPreferences() {
     Spacer(modifier = Modifier.size(spacing_20))
     Row(
         modifier = Modifier

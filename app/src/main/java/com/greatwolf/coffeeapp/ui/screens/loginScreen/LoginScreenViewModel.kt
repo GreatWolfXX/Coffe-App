@@ -35,21 +35,21 @@ class LoginScreenViewModel @Inject constructor(
     fun onEvent(event: LoginScreenEvent) {
         when (event) {
             is LoginScreenEvent.EmailChanged -> {
-                setCoffeeRegistrationState(
+                setRegistrationState(
                     state = loginScreenState.value.copy(
                         email = event.email
                     )
                 )
             }
             is LoginScreenEvent.PasswordChanged -> {
-                setCoffeeRegistrationState(
+                setRegistrationState(
                     state = loginScreenState.value.copy(
                         password = event.password
                     )
                 )
             }
             is LoginScreenEvent.Submit -> {
-                setCoffeeRegistrationState(
+                setRegistrationState(
                     state = loginScreenState.value.copy(
                         isLoading = true
                     )
@@ -59,7 +59,7 @@ class LoginScreenViewModel @Inject constructor(
         }
     }
 
-    private fun setCoffeeRegistrationState(state: LoginScreenState) {
+    private fun setRegistrationState(state: LoginScreenState) {
         _LoginScreenState.update {
             state
         }
@@ -75,7 +75,7 @@ class LoginScreenViewModel @Inject constructor(
         ).any { !it.successful }
 
         if (hasError) {
-            setCoffeeRegistrationState(
+            setRegistrationState(
                 loginScreenState.value.copy(
                     emailError = emailResult.errorMessage,
                     passwordError = passwordResult.errorMessage,
@@ -94,14 +94,14 @@ class LoginScreenViewModel @Inject constructor(
             )
             when(response) {
                 is Result.Success -> {
-                    setCoffeeRegistrationState(
+                    setRegistrationState(
                         state = loginScreenState.value.copy(
                             isLoading = false
                         )
                     )
                     validationEventChannel.send(ValidationEvent.Success)
                 }
-                is Result.Error -> setCoffeeRegistrationState(
+                is Result.Error -> setRegistrationState(
                     state = loginScreenState.value.copy(
                         isLoading = false,
                         isError = response.exception.message
