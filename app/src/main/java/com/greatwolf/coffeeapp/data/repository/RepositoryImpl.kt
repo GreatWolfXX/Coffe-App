@@ -2,6 +2,7 @@ package com.greatwolf.coffeeapp.data.repository
 
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.greatwolf.coffeeapp.data.api.CoffeeApi
 import com.greatwolf.coffeeapp.data.mapper.toDomain
@@ -58,6 +59,22 @@ class RepositoryImpl @Inject constructor(
     override suspend fun updateProfile(userProfile: UserProfileChangeRequest): Result<Void> {
         return try {
             Result.Success(firebaseAuth.currentUser!!.updateProfile(userProfile).await())
+        } catch (exception: Exception) {
+            Result.Error(exception)
+        }
+    }
+
+    override suspend fun getCurrentUser(): Result<FirebaseUser> {
+        return try {
+            Result.Success(firebaseAuth.currentUser!!)
+        } catch (exception: Exception) {
+            Result.Error(exception)
+        }
+    }
+
+    override suspend fun logout(): Result<Unit> {
+        return try {
+            Result.Success(firebaseAuth.signOut())
         } catch (exception: Exception) {
             Result.Error(exception)
         }

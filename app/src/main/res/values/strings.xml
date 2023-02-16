@@ -47,4 +47,12 @@
     <string name="recovery_your_password">Let\'s recover your password</string>
     <string name="title_password_recovery">Password Recovery</string>
     <string name="btn_recover_password">Recover password</string>
+    <string name="t_profile">Profile</string>
+    <string name="t_account">Account</string>
+    <string name="desc_avatar">Avatar</string>
+    <string name="t_profile_details">Profile details</string>
+    <string name="t_payment">Payment</string>
+    <string name="t_check_out_list">Check out list</string>
+    <string name="t_faqs">FAQs</string>
+    <string name="t_logout">Logout</string>
 </resources>

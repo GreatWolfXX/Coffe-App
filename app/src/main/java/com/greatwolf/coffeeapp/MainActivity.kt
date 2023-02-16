@@ -1,7 +1,6 @@
 package com.greatwolf.coffeeapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
@@ -34,6 +33,7 @@ import com.greatwolf.coffeeapp.ui.screens.listScreen.ListScreen
 import com.greatwolf.coffeeapp.ui.screens.loginScreen.LoginScreen
 import com.greatwolf.coffeeapp.ui.screens.passwordRecoveryScreen.PasswordRecoveryScreen
 import com.greatwolf.coffeeapp.ui.screens.preferencesScreen.PreferencesScreen
+import com.greatwolf.coffeeapp.ui.screens.profileScreen.ProfileScreen
 import com.greatwolf.coffeeapp.ui.screens.registerScreen.RegisterScreen
 import com.greatwolf.coffeeapp.ui.theme.CoffeeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -77,7 +77,7 @@ fun App() {
             icon = ImageVector.vectorResource(id = R.drawable.ic_cart)
         ),
         BottomNavItem(
-            route = Screen.ListScreen.route, // temporary solution, next will be a screen profile
+            route = Screen.ProfileScreen.route, // temporary solution, next will be a screen profile
             icon = ImageVector.vectorResource(id = R.drawable.ic_profile)
         )
     )
@@ -85,12 +85,11 @@ fun App() {
     var showBottomBar by rememberSaveable { mutableStateOf(false) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    Log.d("gwolf", navBackStackEntry?.destination?.route.toString())
-
     showBottomBar = when (navBackStackEntry?.destination?.route) {
         Screen.AuthScreen.route -> false
         Screen.RegisterScreen.route -> false
         Screen.LoginScreen.route -> false
+        Screen.PasswordRecoveryScreen.route -> false
         Screen.PreferencesScreen.route + "/{coffeeId}" -> false
         else -> true
     }
@@ -138,6 +137,9 @@ fun NavigationHost(
         }
         composable(route = Screen.PasswordRecoveryScreen.route) {
             PasswordRecoveryScreen(navController = navController)
+        }
+        composable(route = Screen.ProfileScreen.route) {
+            ProfileScreen(navController = navController)
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.sp
 
 val sizing_12 = 12.sp
 val sizing_14 = 14.sp
+val sizing_16 = 16.sp
 val sizing_18 = 18.sp
 val sizing_20 = 20.sp
 val sizing_22 = 22.sp

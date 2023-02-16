@@ -6,3 +6,5 @@ val coffee_time_280 = 280.dp
 val coffee_image_64 = 64.dp
 val coffee_image_96 = 96.dp
 val coffee_image_bg_128 = 128.dp
+val avatar_image_96 = 96.dp
+val profile_menu_item_42 = 42.dp
