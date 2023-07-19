@@ -31,6 +31,7 @@ import com.greatwolf.coffeeapp.ui.components.BottomNavBar
 import com.greatwolf.coffeeapp.ui.screens.authScreen.AuthScreen
 import com.greatwolf.coffeeapp.ui.screens.listScreen.ListScreen
 import com.greatwolf.coffeeapp.ui.screens.loginScreen.LoginScreen
+import com.greatwolf.coffeeapp.ui.screens.mapScreen.MapScreen
 import com.greatwolf.coffeeapp.ui.screens.passwordRecoveryScreen.PasswordRecoveryScreen
 import com.greatwolf.coffeeapp.ui.screens.preferencesScreen.PreferencesScreen
 import com.greatwolf.coffeeapp.ui.screens.profileScreen.ProfileScreen
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    App()
+                        App()
                 }
             }
         }
@@ -69,7 +70,7 @@ fun App() {
             icon = ImageVector.vectorResource(id = R.drawable.ic_home)
         ),
         BottomNavItem(
-            route = Screen.ListScreen.route, // temporary solution, next will be a screen map
+            route = Screen.MapScreen.route, // temporary solution, next will be a screen map
             icon = ImageVector.vectorResource(id = R.drawable.ic_map)
         ),
         BottomNavItem(
@@ -140,6 +141,9 @@ fun NavigationHost(
         }
         composable(route = Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController)
+        }
+        composable(route = Screen.MapScreen.route) {
+            MapScreen(navController = navController)
         }
     }
 }

@@ -115,7 +115,6 @@ fun LoginContent(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LoginForm(
@@ -130,7 +129,7 @@ fun LoginForm(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         TextField(
             value = state.value.email,
             onValueChange = {
@@ -167,7 +166,7 @@ fun LoginForm(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if(state.value.emailError != null) {
+        if (state.value.emailError != null) {
             Spacer(modifier = Modifier.size(spacing_8))
             Text(
                 text = state.value.emailError!!.asString(),
@@ -228,7 +227,7 @@ fun LoginForm(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if(state.value.passwordError != null) {
+        if (state.value.passwordError != null) {
             Spacer(modifier = Modifier.size(spacing_8))
             Text(
                 text = state.value.passwordError!!.asString(),

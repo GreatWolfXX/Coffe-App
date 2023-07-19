@@ -1,4 +1,4 @@
-package com.greatwolf.coffeeapp.data.dto
+    package com.greatwolf.coffeeapp.data.dto
 
 class CoffeeListDTO : ArrayList<CoffeeDto>()
 

@@ -1,5 +1,6 @@
 package com.greatwolf.coffeeapp.ui.screens.profileScreen
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.domain.util.LogOutEvent
@@ -44,7 +44,7 @@ fun ProfileScreen(
     val state = viewModel.profileScreenState.collectAsState()
     viewModel.fetchCurrentUser()
     val context = LocalContext.current
-    LaunchedEffect(key1 = context) {
+    LaunchedEffect(context) {
         viewModel.logOutEvents.collect { event ->
             when (event) {
                 is LogOutEvent.Success -> {
@@ -87,13 +87,20 @@ fun ProfileContent(
             Spacer(modifier = Modifier.size(spacing_16))
         }
         when (state) {
-            is ProfileScreenState.Success -> ProfileSuccess(
-                navController = navController,
-                state = state,
-                viewModel = viewModel,
-                user = state.user
-            )
-            is ProfileScreenState.Loading -> LoadingView()
+            is ProfileScreenState.Success ->
+            {
+                Log.d("checkerBlink", "successProfile")
+                ProfileSuccess(
+                    navController = navController,
+                    state = state,
+                    viewModel = viewModel,
+                    user = state.user
+                )
+            }
+            is ProfileScreenState.Loading -> {
+                Log.d("checkerBlink", "loadingProfile")
+                LoadingView()
+            }
             is ProfileScreenState.Error -> ErrorView(exception = state.exception.message)
         }
     }
@@ -187,8 +194,7 @@ fun ProfileSuccess(
                 title = stringResource(id = R.string.t_logout),
                 icon = ImageVector.vectorResource(id = R.drawable.ic_logout),
                 onClick = {
-                    viewModel.logoutUser()
-                    FirebaseAuth.getInstance().signOut() // temporary solution
+                    viewModel.onEvent(LogOutEvent.Success)
                 }
             )
         }

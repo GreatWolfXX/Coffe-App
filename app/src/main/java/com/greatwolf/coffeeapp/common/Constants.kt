@@ -6,4 +6,7 @@ object Constants {
 
     const val PARAM_COFFEE_ID = "coffeeId"
 
+        const val CREDENTIALS_EMAIL_KEY = "auth_email_credentials"
+        const val CREDENTIALS_PWD_KEY = "auth_pwd_credentials"
+
 }

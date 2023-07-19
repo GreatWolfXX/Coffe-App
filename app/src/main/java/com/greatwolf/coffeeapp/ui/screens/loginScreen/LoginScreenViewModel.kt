@@ -1,12 +1,15 @@
 package com.greatwolf.coffeeapp.ui.screens.loginScreen
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.greatwolf.coffeeapp.common.Constants
 import com.greatwolf.coffeeapp.domain.useCase.LoginUseCase
 import com.greatwolf.coffeeapp.domain.useCase.ValidateEmailUseCase
 import com.greatwolf.coffeeapp.domain.useCase.ValidatePasswordUseCase
 import com.greatwolf.coffeeapp.domain.util.Result
 import com.greatwolf.coffeeapp.domain.util.ValidationEvent
+import com.greatwolf.coffeeapp.domain.util.writeString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -15,10 +18,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginScreenViewModel @Inject constructor(
+    private val appContext: Application,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val loginUseCase: LoginUseCase
-) : ViewModel() {
+) : AndroidViewModel(appContext) {
 
     private val _LoginScreenState: MutableStateFlow<LoginScreenState> =
         MutableStateFlow(LoginScreenState())
@@ -99,6 +103,7 @@ class LoginScreenViewModel @Inject constructor(
                             isLoading = false
                         )
                     )
+                    saveCredentials()
                     validationEventChannel.send(ValidationEvent.Success)
                 }
                 is Result.Error -> setRegistrationState(
@@ -108,6 +113,13 @@ class LoginScreenViewModel @Inject constructor(
                     )
                 )
             }
+        }
+    }
+
+    private fun saveCredentials() {
+        viewModelScope.launch {
+            appContext.writeString(Constants.CREDENTIALS_EMAIL_KEY, loginScreenState.value.email)
+            appContext.writeString(Constants.CREDENTIALS_PWD_KEY, loginScreenState.value.password)
         }
     }
 

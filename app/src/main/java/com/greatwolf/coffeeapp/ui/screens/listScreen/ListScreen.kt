@@ -1,5 +1,6 @@
 package com.greatwolf.coffeeapp.ui.screens.listScreen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,30 +33,33 @@ import com.greatwolf.coffeeapp.ui.Screen
 import com.greatwolf.coffeeapp.ui.components.*
 import com.greatwolf.coffeeapp.ui.theme.*
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ListScreen(
-    navController: NavController,
-    viewModel: ListScreenViewModel = hiltViewModel()
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun ListScreen(
+        navController: NavController,
+        viewModel: ListScreenViewModel = hiltViewModel()
     ) {
-    val state = viewModel.listScreenState.collectAsState()
-    viewModel.fetchCoffees()
-    Scaffold(
-        content = { paddingValues ->
-            ListContent(
-                navController,
-                state = state.value,
-                paddingValues = paddingValues
-            )
-        })
-}
+        val state = viewModel.listScreenState.collectAsState()
+        LaunchedEffect(Unit) {
+            viewModel.fetchCoffees()
+        }
+        Scaffold(
+            content = { paddingValues ->
+                ListContent(
+                    navController,
+                    state = state.value,
+                    paddingValues = paddingValues
+                )
+            })
+    }
 
 
 @Composable
 fun ListContent(
     navController: NavController,
     state: ListScreenState,
-    paddingValues: PaddingValues) {
+    paddingValues: PaddingValues
+) {
     Column {
         NavBar(
             onClickArrowBack = {
@@ -64,12 +69,24 @@ fun ListContent(
             paddingValues = PaddingValues(horizontal = spacing_32)
         )
         when (state) {
-            is ListScreenState.Success -> ListSuccess(
-                navController = navController,
-                listOfCoffees = state.listOfCoffees
-            )
-            is ListScreenState.Loading -> LoadingView()
-            is ListScreenState.Error -> ErrorView(exception = state.exception.message)
+            is ListScreenState.Success -> {
+                Log.d("checkerBlink", "successList")
+                ListSuccess(
+                    navController = navController,
+                    listOfCoffees = state.listOfCoffees
+                )
+            }
+
+            is ListScreenState.Loading -> {
+                Log.d("checkerBlink", "loadingList")
+                LoadingView()
+            }
+
+            is ListScreenState.Error -> {
+                Log.d("checkerBlink", "errorList")
+                ErrorView(exception = state.exception.message)
+            }
+
         }
     }
 }
@@ -112,7 +129,7 @@ fun Card(
                 .fillMaxWidth()
                 .background(Color.White)
                 .padding(spacing_32, spacing_16, spacing_24, spacing_16)
-        )  {
+        ) {
             AsyncImage(
                 model = coffee.image,
                 contentDescription = coffee.title,

@@ -1,10 +1,13 @@
 package com.greatwolf.coffeeapp.ui.screens.authScreen
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,22 +18,29 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.greatwolf.coffeeapp.R
 import com.greatwolf.coffeeapp.ui.Screen
+import com.greatwolf.coffeeapp.ui.components.LoadingView
 import com.greatwolf.coffeeapp.ui.theme.*
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: AuthScreenViewModel = hiltViewModel()
 ) {
+    val state = viewModel.authScreenState.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.getCredential()
+    }
     Scaffold(
         content = { paddingValues ->
             BoxWithConstraints() {
                 AuthContent(
                     navController = navController,
+                    state = state.value,
                     paddingValues = paddingValues
                 )
             }
@@ -41,7 +51,32 @@ fun AuthScreen(
 @Composable
 fun AuthContent(
     navController: NavController,
+    state: AuthScreenState,
     paddingValues: PaddingValues
+) {
+    when (state) {
+        is AuthScreenState.NewAuth -> {
+            Log.d("checkerBlink", "newAuth")
+            AuthSuccess(
+                navController = navController
+            )
+        }
+
+        is AuthScreenState.SuccessAuth -> {
+            Log.d("checkerBlink", "successAuth")
+            navController.navigate(Screen.MapScreen.route)
+        }
+
+        is AuthScreenState.Loading -> {
+            Log.d("checkerBlink", "loadingAuth")
+            LoadingView()
+        }
+    }
+}
+
+@Composable
+fun AuthSuccess(
+    navController: NavController
 ) {
     Image(
         imageVector = ImageVector.vectorResource(id = R.drawable.bg_coffe_time),
@@ -61,7 +96,7 @@ fun AuthContent(
                 .align(alignment = Alignment.CenterHorizontally)
         )
         Text(
-            stringResource(id = R.string.auth_title),
+            String.format(stringResource(id = R.string.auth_title), 2342.574563453),
             style = MaterialTheme.typography.bodyLarge,
             fontFamily = roboto,
             fontWeight = FontWeight.Medium,
@@ -141,7 +176,7 @@ fun ButtonContainer(navController: NavController) {
         }
         Spacer(modifier = Modifier.size(spacing_20))
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {  },
             colors = ButtonDefaults.buttonColors(Color.White),
             border = BorderStroke(spacing_1, ButtonFacebookCoffee),
             modifier = Modifier
